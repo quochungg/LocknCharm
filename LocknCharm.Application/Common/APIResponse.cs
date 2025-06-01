@@ -1,4 +1,4 @@
-﻿namespace LocknCharm.Application.Common.Responses
+﻿namespace LocknCharm.Application.Common
 {
     public class APIResponse
     {

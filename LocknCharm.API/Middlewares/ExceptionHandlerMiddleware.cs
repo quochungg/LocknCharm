@@ -1,7 +1,7 @@
-﻿using LocknCharm.Application.Common.Responses;
+﻿using LocknCharm.Application.Common;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace LocknCharm.API.ExceptionHandlers
+namespace LocknCharm.API.Middlewares
 {
     public class ExceptionHandlerMiddleware : IExceptionHandler
     {

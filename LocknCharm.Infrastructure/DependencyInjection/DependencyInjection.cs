@@ -1,8 +1,8 @@
-﻿using LocknCharm.Domain.Interfaces.Repositories;
+﻿using LocknCharm.Application.Repositories;
 using LocknCharm.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LocknCharm.Infrastructure
+namespace LocknCharm.Infrastructure.DependencyInjection
 {
     public static class DependencyInjection
     {

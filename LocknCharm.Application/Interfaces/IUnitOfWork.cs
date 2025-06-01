@@ -1,4 +1,4 @@
-﻿namespace LocknCharm.Domain.Interfaces.Repositories
+﻿namespace LocknCharm.Application.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {

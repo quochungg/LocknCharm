@@ -1,4 +1,4 @@
-﻿using LocknCharm.Domain.Interfaces.Repositories;
+﻿using LocknCharm.Application.Repositories;
 using LocknCharm.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
