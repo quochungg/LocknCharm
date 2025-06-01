@@ -1,8 +1,9 @@
-﻿namespace LocknCharm.Domain.Entities
+﻿using LocknCharm.Domain.Common;
+
+namespace LocknCharm.Domain.Entities
 {
-    public class Category
+    public class Category : BaseEntity
     {
-        public int ID { get; set; }
         public string Name { get; set; } = null!;
         public string? Description { get; set; }
 
