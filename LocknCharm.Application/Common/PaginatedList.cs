@@ -9,7 +9,7 @@ namespace LocknCharm.Application.Common
         public int PageSize { get; }
         public int TotalPages { get; }
         public int TotalCount { get; }
-        public PaginatedList(IReadOnlyCollection<T>? items, int count, int pageNumber, int pageSize)
+        public PaginatedList(IReadOnlyCollection<T>? items, int count, int pageNumber = 1, int pageSize = 10)
         {
             PageNumber = pageNumber;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);

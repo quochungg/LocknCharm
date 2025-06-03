@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LocknCharm.Infrastructure.Migrations
 {
     [DbContext(typeof(KeyChainDbContext))]
-    [Migration("20250601142940_InitialMigration")]
+    [Migration("20250601144450_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -27,7 +27,7 @@ namespace LocknCharm.Infrastructure.Migrations
 
             modelBuilder.Entity("LocknCharm.Domain.Entities.Category", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -44,21 +44,18 @@ namespace LocknCharm.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("LocknCharm.Domain.Entities.PreMadeKeychain", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CategoryID")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("CategoryID1")
+                    b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
@@ -83,9 +80,9 @@ namespace LocknCharm.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("CategoryID1");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("PreMadeKeychains");
                 });
@@ -94,7 +91,7 @@ namespace LocknCharm.Infrastructure.Migrations
                 {
                     b.HasOne("LocknCharm.Domain.Entities.Category", "Category")
                         .WithMany("PreMadeKeychains")
-                        .HasForeignKey("CategoryID1")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

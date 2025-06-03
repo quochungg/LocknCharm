@@ -40,7 +40,7 @@ namespace LocknCharm.Infrastructure.Repositories
             return _dbSet.ToList();
         }
 
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
         {
             IQueryable<T> query = _dbSet;
 
@@ -74,7 +74,7 @@ namespace LocknCharm.Infrastructure.Repositories
             {
                 query = query.AsNoTracking();
             }
-            // query = query.AsNoTracking();
+
             if (includeProperties != null)
             {
                 foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))

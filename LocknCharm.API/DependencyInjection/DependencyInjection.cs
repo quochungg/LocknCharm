@@ -7,7 +7,6 @@ using System.Reflection;
 using LocknCharm.Application.Common;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using LocknCharm.Application.DependencyInjection;
 using LocknCharm.API.Middlewares;
 
 namespace LocknCharm.API.DependencyInjection
@@ -17,17 +16,18 @@ namespace LocknCharm.API.DependencyInjection
         public static void AddApiServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDatabase(configuration);
-            services.AddExceptionHandler<ExceptionHandlerMiddleware>();
-            services.AddApplication();
+            services.AddMiddlewares();
+            //services.AddJwtAuthenticate();
             services.ConfigCors();
             services.ConfigSwagger();
+            //services.ConfigJwt(configuration);
         }
 
         public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<KeyChainDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("DefaultSQLConnection"));
+                options.UseSqlServer(configuration.GetConnectionString("LocalConnection"));
             });
         }
 
@@ -58,6 +58,12 @@ namespace LocknCharm.API.DependencyInjection
             });
         }
 
+        public static void AddMiddlewares(this IServiceCollection services)
+        {
+            services.AddExceptionHandler<ExceptionHandlerMiddleware>();
+            services.AddProblemDetails();
+        }
+
         public static void ConfigCors(this IServiceCollection services)
         {
             services.AddCors(options =>
@@ -74,9 +80,10 @@ namespace LocknCharm.API.DependencyInjection
 
         public static void ConfigSwagger(this IServiceCollection services)
         {
+            services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
                     Title = "API"
@@ -92,22 +99,22 @@ namespace LocknCharm.API.DependencyInjection
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    In = ParameterLocation.Header,
                     Description = "JWT Authorization header sử dụng scheme Bearer.",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                    Type = SecuritySchemeType.Http,
                     Name = "Authorization",
                     Scheme = "bearer"
                 });
-                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
-                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                        new OpenApiSecurityScheme
                         {
-                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                            Reference = new OpenApiReference
                             {
-                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                                Type = ReferenceType.SecurityScheme,
                                 Id = "Bearer"
                             }
                         },

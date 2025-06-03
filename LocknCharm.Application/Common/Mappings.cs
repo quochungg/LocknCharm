@@ -10,6 +10,7 @@ namespace LocknCharm.Application.Common
         {
             //PreMade Keychain Mappings
             CreateMap<PreMadeKeychain, PreMadeKeychainDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ReverseMap();
 

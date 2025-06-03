@@ -6,14 +6,15 @@ namespace LocknCharm.Infrastructure.DependencyInjection
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        public static void AddInfrastructure(this IServiceCollection services)
         {
-            return services;
+            services.AddRepositories();
         }
 
         public static void AddRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }
 }

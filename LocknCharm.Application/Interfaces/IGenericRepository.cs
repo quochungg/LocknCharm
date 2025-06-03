@@ -19,7 +19,7 @@ namespace LocknCharm.Application.Repositories
 
         // async
         //Task<List<T>> GetAllAsync();
-        Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null);
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null);
         Task<T> GetByPropertyAsync(Expression<Func<T, bool>>? filter = null, bool tracked = true, string? includeProperties = null);
         Task<T?> GetByIdAsync(object id);
         Task InsertAsync(T obj);

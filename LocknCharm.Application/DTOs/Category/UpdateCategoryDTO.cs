@@ -1,6 +1,6 @@
-﻿namespace LocknCharm.Application.DTOs
+﻿namespace LocknCharm.Application.DTOs.Category
 {
-    public class CategoryDTO
+    public class UpdateCategoryDTO
     {
         public string Id { get; set; } = null!;
         public string Name { get; set; } = null!;

@@ -8,6 +8,7 @@ namespace LocknCharm.Infrastructure.Repositories
         private bool disposed = false;
         private readonly KeyChainDbContext _dbContext = dbContext;
 
+
         public IGenericRepository<T> GetRepository<T>() where T : class
         {
             return new GenericRepository<T>(_dbContext);

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LocknCharm.Application.Common;
 using LocknCharm.Application.DTOs;
+using LocknCharm.Application.DTOs.Category;
 using LocknCharm.Application.Interfaces;
 using LocknCharm.Application.Repositories;
 using LocknCharm.Domain.Entities;
@@ -20,7 +21,7 @@ namespace LocknCharm.Application.Services
             _categoryRepository = _unitOfWork.GetRepository<Category>();
         }
 
-        public async Task<CategoryDTO> CreateAsync(CategoryDTO category)
+        public async Task<CategoryDTO> CreateAsync(CreateCategoryDTO category)
         {
             var categoryEntities = _mapper.Map<Category>(category);
             await _categoryRepository.InsertAsync(categoryEntities);
@@ -37,19 +38,37 @@ namespace LocknCharm.Application.Services
             return true;
         }
 
-        public Task<PaginatedList<CategoryDTO>> GetAllAsync()
+        public async Task<PaginatedList<CategoryDTO>> GetPaginatedListAsync(string? searchName, int index, int pageSize, string orderBy, string sortBy)
         {
-            throw new NotImplementedException();
+            var query = _categoryRepository.Entities;
+
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                query = query.Where(c => c.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase));
+            }
+
+            var paginatedList = await PaginatedList<CategoryDTO>.CreateAsync(_mapper.Map<IQueryable<CategoryDTO>>(query), index, pageSize);
+
+            return paginatedList;
         }
 
-        public Task<CategoryDTO> GetByIdAsync(int id)
+        public async Task<CategoryDTO> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var category = await _categoryRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException("Can not find Category!");
+            var categoryDto = _mapper.Map<CategoryDTO>(category);
+            return categoryDto;
+
         }
 
-        public Task<CategoryDTO> UpdateAsync(CategoryDTO category)
+        public async Task<CategoryDTO> UpdateAsync(UpdateCategoryDTO category)
         {
-            throw new NotImplementedException();
+            var categoryEntity = _mapper.Map<Category>(category);
+            await _categoryRepository.UpdateAsync(categoryEntity);
+            await _unitOfWork.SaveAsync();
+
+            var updatedCategory = await _categoryRepository.GetByIdAsync(categoryEntity.Id);
+            return _mapper.Map<CategoryDTO>(updatedCategory);
+
         }
     }
 }
