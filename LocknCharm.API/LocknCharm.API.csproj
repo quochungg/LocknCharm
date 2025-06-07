@@ -16,4 +16,8 @@
     <ProjectReference Include="..\LocknCharm.Infrastructure\LocknCharm.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
 </Project>

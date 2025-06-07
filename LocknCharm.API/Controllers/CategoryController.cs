@@ -2,16 +2,51 @@
 
 namespace LocknCharm.API.Controllers
 {
-    public class CategoryController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CategoryController : ControllerBase
     {
-
         [HttpGet]
-        [Route("categories")]
         public IActionResult GetCategories()
         {
-            // This is a placeholder for the actual implementation
-            // You would typically call a service to get the categories
-            return Ok(new { Message = "List of categories" });
+            var categories = new[]
+            {
+                new { Id = 1, Name = "Keychains" },
+                new { Id = 2, Name = "Accessories" }
+            };
+
+            return Ok(categories);
         }
+
+        [HttpGet("{id}")]
+        public IActionResult GetCategoryById(int id)
+        {
+            var category = new { Id = id, Name = $"Category {id}" };
+
+            return Ok(category);
+        }
+
+        [HttpPost]
+        public IActionResult CreateCategory([FromBody] CategoryDto category)
+        {
+            return CreatedAtAction(nameof(GetCategoryById), new { id = 999 }, category);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateCategory(int id, [FromBody] CategoryDto category)
+        {
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCategory(int id)
+        {
+            return NoContent();
+        }
+    }
+
+    public class CategoryDto
+    {
+        public string Name { get; set; }
     }
 }
