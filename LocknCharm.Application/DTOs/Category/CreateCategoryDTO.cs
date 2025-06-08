@@ -1,4 +1,4 @@
-﻿namespace LocknCharm.Application.DTOs.Category
+﻿namespace LocknCharm.Application.DTOs
 {
     public class CreateCategoryDTO
     {
