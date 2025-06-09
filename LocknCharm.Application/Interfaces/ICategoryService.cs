@@ -1,6 +1,5 @@
 ﻿using LocknCharm.Application.Common;
 using LocknCharm.Application.DTOs;
-using LocknCharm.Application.DTOs.Category;
 
 namespace LocknCharm.Application.Interfaces
 {
