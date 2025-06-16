@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LocknCharm.Application.Common;
+using LocknCharm.Application.DTOs;
+using LocknCharm.Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace LocknCharm.API.Controllers
 {
@@ -6,6 +10,14 @@ namespace LocknCharm.API.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
+
+        private readonly ICategoryService _categoryService;
+
+        public CategoryController(ICategoryService categoryService)
+        {
+            _categoryService = categoryService;
+        }
+
         [HttpGet]
         public IActionResult GetCategories()
         {
@@ -27,13 +39,14 @@ namespace LocknCharm.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCategory([FromBody] CategoryDto category)
+        public async Task<ActionResult<APIResponse>> CreateCategory([FromBody] CreateCategoryDTO category)
         {
-            return CreatedAtAction(nameof(GetCategoryById), new { id = 999 }, category);
+            var created = await _categoryService.CreateAsync(category);
+            return APIResponse.Success(201, created);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateCategory(int id, [FromBody] CategoryDto category)
+        public IActionResult UpdateCategory(int id, [FromBody] UpdateCategoryDTO category)
         {
             return NoContent();
         }
@@ -43,10 +56,5 @@ namespace LocknCharm.API.Controllers
         {
             return NoContent();
         }
-    }
-
-    public class CategoryDto
-    {
-        public string Name { get; set; }
     }
 }

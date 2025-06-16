@@ -22,6 +22,7 @@ namespace LocknCharm.Application.Common
             //Category Mappings
             CreateMap<Category, CategoryDTO>()
                 .ReverseMap();
+            CreateMap<Category, CreateCategoryDTO>().ReverseMap();
         }
     }
 }

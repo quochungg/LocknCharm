@@ -6,7 +6,7 @@
         public int StatusCode { get; set; }
         public string? Message { get; set; }
         public List<string>? Errors { get; set; }
-        public Object? Data { get; set; }
+        public object? Data { get; set; }
 
         public static APIResponse Fail(string message, List<string>? errors = null, int statusCode = 500)
         {
@@ -16,6 +16,16 @@
                 StatusCode = statusCode,
                 Message = message,
                 Errors = errors
+            };
+        }
+
+        public static APIResponse Success(int statusCode, object? data = null)
+        {
+            return new APIResponse
+            {
+                IsSuccess = true,
+                StatusCode = statusCode,
+                Data = data
             };
         }
     }
