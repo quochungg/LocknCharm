@@ -49,7 +49,7 @@ namespace LocknCharm.API.Controllers
         public async Task<ActionResult<APIResponse>> DeleteCategory(int id)
         {
             var isDeleted = await _categoryService.DeleteAsync(id);
-            return APIResponse.(204, null);
+            return APIResponse.Success(204, null);
         }
     }
 }
