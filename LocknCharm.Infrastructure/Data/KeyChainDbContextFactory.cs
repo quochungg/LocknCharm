@@ -17,7 +17,7 @@ namespace LocknCharm.Infrastructure.Data
                 .Build();
 
 
-            string? connectionString = configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? configuration.GetConnectionString("DefaultConnection");
 
             var builder = new DbContextOptionsBuilder<KeyChainDbContext>();
             builder.UseNpgsql(connectionString);
