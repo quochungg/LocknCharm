@@ -8,17 +8,23 @@ namespace LocknCharm.Infrastructure.Data
     {
         public KeyChainDbContext CreateDbContext(string[] args)
         {
-            string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+            var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
 
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "LocknCharm.API"))
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
-                .Build();
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "LocknCharm.API"))
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+                    .Build();
 
-            string? connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? configuration.GetConnectionString("DefaultConnection");
-            Console.WriteLine($"Using connection string: {connectionString}");
+                connectionString = configuration.GetConnectionString("DefaultConnection");
+            }
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+                throw new InvalidOperationException("Connection string not found in environment or appsettings.");
 
             var builder = new DbContextOptionsBuilder<KeyChainDbContext>();
             builder.UseNpgsql(connectionString);
