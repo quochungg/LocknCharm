@@ -26,6 +26,8 @@ var app = builder.Build();
         c.RoutePrefix = string.Empty;
     });
 //}
+app.UseStaticFiles();
+
 app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
