@@ -8,7 +8,7 @@ namespace LocknCharm.Application.Repositories
         IQueryable<T> Entities { get; }
 
         // non async
-        IEnumerable<T> GetAll();
+        IQueryable<T> GetAll();
         T? GetById(object id);
         void Insert(T obj);
         void InsertRange(IList<T> obj);
@@ -19,7 +19,7 @@ namespace LocknCharm.Application.Repositories
 
         // async
         //Task<List<T>> GetAllAsync();
-        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null);
+        Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null);
         Task<T> GetByPropertyAsync(Expression<Func<T, bool>>? filter = null, bool tracked = true, string? includeProperties = null);
         Task<T?> GetByIdAsync(object id);
         Task InsertAsync(T obj);

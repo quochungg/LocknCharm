@@ -35,12 +35,12 @@ namespace LocknCharm.Infrastructure.Repositories
             _dbSet.Remove(entity);
         }
 
-        public IEnumerable<T> GetAll()
+        public IQueryable<T> GetAll()
         {
-            return _dbSet.ToList();
+            return _dbSet;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
         {
             IQueryable<T> query = _dbSet;
 
@@ -56,7 +56,7 @@ namespace LocknCharm.Infrastructure.Repositories
                 }
             }
 
-            return await query.ToListAsync();
+            return query;
         }
         public T? GetById(object id)
         {

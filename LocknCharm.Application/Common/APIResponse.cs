@@ -19,12 +19,13 @@
             };
         }
 
-        public static APIResponse Success(int statusCode, object? data = null)
+        public static APIResponse Success(int statusCode, string message, object? data = null)
         {
             return new APIResponse
             {
-                IsSuccess = true,
                 StatusCode = statusCode,
+                IsSuccess = true,
+                Message = message,
                 Data = data
             };
         }

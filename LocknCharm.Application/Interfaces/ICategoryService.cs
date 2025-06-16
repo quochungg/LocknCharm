@@ -9,6 +9,6 @@ namespace LocknCharm.Application.Interfaces
         Task<PaginatedList<CategoryDTO>> GetPaginatedListAsync(string? searchName, int index, int pageSize);
         Task<CategoryDTO> CreateAsync(CreateCategoryDTO category);
         Task<CategoryDTO> UpdateAsync(UpdateCategoryDTO category);
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(string id);
     }
 }

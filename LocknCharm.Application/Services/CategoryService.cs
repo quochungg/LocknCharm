@@ -4,6 +4,7 @@ using LocknCharm.Application.DTOs;
 using LocknCharm.Application.Interfaces;
 using LocknCharm.Application.Repositories;
 using LocknCharm.Domain.Entities;
+using AutoMapper.QueryableExtensions;
 
 namespace LocknCharm.Application.Services
 {
@@ -28,35 +29,35 @@ namespace LocknCharm.Application.Services
             return _mapper.Map<CategoryDTO>(categoryEntities);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            var category = await _categoryRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException("Can not find Category!");
-            await _categoryRepository.DeleteAsync(id);
+            var category = await _categoryRepository.GetByIdAsync(new Guid(id)) ?? throw new KeyNotFoundException("Can not find Category!");
+            await _categoryRepository.DeleteAsync(new Guid(id));
             await _unitOfWork.SaveAsync();
-
             return true;
         }
 
         public async Task<PaginatedList<CategoryDTO>> GetPaginatedListAsync(string? searchName, int index, int pageSize)
         {
-            var query = _categoryRepository.Entities;
+            var query = await _categoryRepository.GetAllAsync();
 
             if (!string.IsNullOrEmpty(searchName))
             {
-                query = query.Where(c => c.Name.Contains(searchName, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(c => c.Name.Contains(searchName));
             }
 
-            var paginatedList = await PaginatedList<CategoryDTO>.CreateAsync(_mapper.Map<IQueryable<CategoryDTO>>(query), index, pageSize);
+            var projectedQuery = query
+                .ProjectTo<CategoryDTO>(_mapper.ConfigurationProvider);
 
-            return paginatedList;
+            return await PaginatedList<CategoryDTO>.CreateAsync(projectedQuery, index, pageSize);
         }
 
         public async Task<CategoryDTO> GetByIdAsync(string id)
         {
-            var category = await _categoryRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException("Can not find Category!");
+            var category = await _categoryRepository.GetByIdAsync(new Guid(id)) 
+                ?? throw new KeyNotFoundException("Can not find Category!");
             var categoryDto = _mapper.Map<CategoryDTO>(category);
             return categoryDto;
-
         }
 
         public async Task<CategoryDTO> UpdateAsync(UpdateCategoryDTO category)

@@ -13,7 +13,6 @@ namespace LocknCharm.Application.Common
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ReverseMap();
-
             CreateMap<CreatePreMadeKeychainDTO, PreMadeKeychain>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Category, opt => opt.Ignore())
@@ -22,7 +21,10 @@ namespace LocknCharm.Application.Common
             //Category Mappings
             CreateMap<Category, CategoryDTO>()
                 .ReverseMap();
-            CreateMap<Category, CreateCategoryDTO>().ReverseMap();
+            CreateMap<Category, CreateCategoryDTO>()
+                .ReverseMap();
+            CreateMap<Category, UpdateCategoryDTO>()
+                .ReverseMap();
         }
     }
 }
