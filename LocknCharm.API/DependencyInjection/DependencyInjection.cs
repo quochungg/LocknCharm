@@ -25,9 +25,16 @@ namespace LocknCharm.API.DependencyInjection
 
         public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
+            var connectionString =
+                Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ??
+                configuration.GetConnectionString("DefaultConnection");
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+                throw new InvalidOperationException("Connection string is missing.");
+
             services.AddDbContext<KeyChainDbContext>(options =>
             {
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(connectionString);
             });
         }
 

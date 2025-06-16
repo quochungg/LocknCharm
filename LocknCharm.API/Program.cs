@@ -27,7 +27,6 @@ var app = builder.Build();
     });
 //}
 
-Console.WriteLine("CS FROM ENV: " + Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING"));
 
 app.UseStaticFiles();
 
