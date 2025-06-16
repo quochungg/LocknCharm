@@ -2,7 +2,6 @@
 using LocknCharm.Application.DTOs;
 using LocknCharm.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace LocknCharm.API.Controllers
 {
@@ -19,23 +18,17 @@ namespace LocknCharm.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCategories()
+        public async Task<ActionResult<APIResponse>> GetCategories(string? searchName, int index = 1, int pageSize = 10)
         {
-            var categories = new[]
-            {
-                new { Id = 1, Name = "Keychains" },
-                new { Id = 2, Name = "Accessories" }
-            };
-
-            return Ok(categories);
+            var categories = await _categoryService.GetPaginatedListAsync(searchName, index, pageSize);
+            return APIResponse.Success(200,categories);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCategoryById(int id)
+        public async Task<ActionResult<APIResponse>> GetCategoryById(string id)
         {
-            var category = new { Id = id, Name = $"Category {id}" };
-
-            return Ok(category);
+            var category = await _categoryService.GetByIdAsync(id);
+            return APIResponse.Success(200, category);
         }
 
         [HttpPost]
@@ -46,15 +39,17 @@ namespace LocknCharm.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateCategory(int id, [FromBody] UpdateCategoryDTO category)
+        public async Task<ActionResult<APIResponse>> UpdateCategory([FromBody] UpdateCategoryDTO category)
         {
-            return NoContent();
+            var updated = await _categoryService.UpdateAsync(category);
+            return APIResponse.Success(200, updated);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCategory(int id)
+        public async Task<ActionResult<APIResponse>> DeleteCategory(int id)
         {
-            return NoContent();
+            var isDeleted = await _categoryService.DeleteAsync(id);
+            return APIResponse.(204, null);
         }
     }
 }

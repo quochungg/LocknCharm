@@ -37,7 +37,7 @@ namespace LocknCharm.Application.Services
             return true;
         }
 
-        public async Task<PaginatedList<CategoryDTO>> GetPaginatedListAsync(string? searchName, int index, int pageSize, string orderBy, string sortBy)
+        public async Task<PaginatedList<CategoryDTO>> GetPaginatedListAsync(string? searchName, int index, int pageSize)
         {
             var query = _categoryRepository.Entities;
 
@@ -51,7 +51,7 @@ namespace LocknCharm.Application.Services
             return paginatedList;
         }
 
-        public async Task<CategoryDTO> GetByIdAsync(int id)
+        public async Task<CategoryDTO> GetByIdAsync(string id)
         {
             var category = await _categoryRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException("Can not find Category!");
             var categoryDto = _mapper.Map<CategoryDTO>(category);
