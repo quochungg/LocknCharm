@@ -17,10 +17,10 @@ namespace LocknCharm.Infrastructure.Data
                 .Build();
 
 
-            string? connectionString = configuration.GetConnectionString("LocalConnection");
+            string? connectionString = configuration.GetConnectionString("DefaultConnection");
 
             var builder = new DbContextOptionsBuilder<KeyChainDbContext>();
-            builder.UseSqlServer(connectionString);
+            builder.UseNpgsql(connectionString);
 
             return new KeyChainDbContext(builder.Options);
         }

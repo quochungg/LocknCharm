@@ -27,7 +27,7 @@ namespace LocknCharm.API.DependencyInjection
         {
             services.AddDbContext<KeyChainDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("LocalConnection"));
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
             });
         }
 
