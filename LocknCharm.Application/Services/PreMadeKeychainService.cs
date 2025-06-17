@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LocknCharm.Application.Common;
 using LocknCharm.Application.DTOs;
 using LocknCharm.Application.Repositories;
@@ -22,7 +23,7 @@ namespace LocknCharm.Application.Services
             _categoryRepository = _unitOfWork.GetRepository<Category>();
         }
 
-        public async Task CreateAsync(CreatePreMadeKeychainDTO preMadeKeychain)
+        public async Task<PreMadeKeychainDTO> CreateAsync(CreatePreMadeKeychainDTO preMadeKeychain)
         {
             var preMadeKeychainEntity = _mapper.Map<PreMadeKeychain>(preMadeKeychain);
             var category = await _categoryRepository.GetByIdAsync(preMadeKeychainEntity.CategoryId);
@@ -31,25 +32,37 @@ namespace LocknCharm.Application.Services
                 throw new KeyNotFoundException("Category not found for the PreMadeKeychain.");
             }
             preMadeKeychainEntity.Category = category;
-            
+
             await _preMadeKeychainRepository.InsertAsync(preMadeKeychainEntity);
             await _unitOfWork.SaveAsync();
+
+            var preMadeKeychainDto = _mapper.Map<PreMadeKeychainDTO>(preMadeKeychainEntity);
+            return preMadeKeychainDto;
 
         }
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var preMadeKeychain = await _preMadeKeychainRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException("Can not find PreMadeKeychain");
+            var preMadeKeychain = await _preMadeKeychainRepository.GetByIdAsync(new Guid(id))
+                ?? throw new KeyNotFoundException("Can not find PreMadeKeychain");
 
             await _preMadeKeychainRepository.DeleteAsync(id);
             await _unitOfWork.SaveAsync();
             return true;
         }
 
-        public Task<PaginatedList<PreMadeKeychainDTO>> GetAllAsync()
+        public Task<PaginatedList<PreMadeKeychainDTO>> GetPaginatedListAsync(string? searchName, int index, int pageSize)
         {
-            throw new NotImplementedException();
+            var query = _preMadeKeychainRepository.GetAll();
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                query = query.Where(p => p.Name.Contains(searchName));
+            }
+            var projectedQuery = query
+                .ProjectTo<PreMadeKeychainDTO>(_mapper.ConfigurationProvider);
+            return PaginatedList<PreMadeKeychainDTO>.CreateAsync(projectedQuery, index, pageSize);
         }
+
 
         public async Task<PreMadeKeychainDTO> GetByIdAsync(string id)
         {
@@ -60,9 +73,14 @@ namespace LocknCharm.Application.Services
             return preMadeKeychainDto;
         }
 
-        public Task<PreMadeKeychainDTO> UpdateAsync(PreMadeKeychainDTO preMadeKeychain)
+        public async Task<PreMadeKeychainDTO> UpdateAsync(UpdatePreMadeKeychainDTO preMadeKeychain)
         {
-            throw new NotImplementedException();
+            var preMadeKeychainEntity = _mapper.Map<PreMadeKeychain>(preMadeKeychain);
+            await _preMadeKeychainRepository.UpdateAsync(preMadeKeychainEntity);
+            await _unitOfWork.SaveAsync();
+
+            var updatedPreMadeKeychainDto = await _preMadeKeychainRepository.GetByIdAsync(new Guid(preMadeKeychain.Id));
+            return _mapper.Map<PreMadeKeychainDTO>(updatedPreMadeKeychainDto);
         }
     }
 }

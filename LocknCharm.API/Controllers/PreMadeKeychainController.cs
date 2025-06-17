@@ -5,52 +5,50 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LocknCharm.API.Controllers
 {
-    public class PreMadeKeychainController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PreMadeKeychainController : ControllerBase
     {
         private readonly IPreMadeKeychainService _preMadeKeychainService;
+
         public PreMadeKeychainController(IPreMadeKeychainService preMadeKeychainService)
         {
             _preMadeKeychainService = preMadeKeychainService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPreMadeKeychains()
+        public async Task<ActionResult<APIResponse>> GetPreMadeKeychains(string? searchName = null, int index = 1, int pageSize = 10)
         {
-            var output = await _preMadeKeychainService.GetAllAsync();
-            APIResponse response = new APIResponse
-            {
-                IsSuccess = true,
-                Data = output.Items,
-                Message = "PreMadeKeychains retrieved successfully.",
-                Errors = null,
-                StatusCode = 200,
-            };
-            return Ok(response);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreatePreMadeKeychain([FromBody] CreatePreMadeKeychainDTO preMadeKeychainDto)
-        {
-            await _preMadeKeychainService.CreateAsync(preMadeKeychainDto);
-            return Ok(new APIResponse { IsSuccess = true, Message = "PreMadeKeychain created successfully.", StatusCode = 201 });
+            var keychains = await _preMadeKeychainService.GetPaginatedListAsync(searchName, index, pageSize);
+            return APIResponse.Success(200, "Get list premade keychains successful!", keychains);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPreMadeKeychainById(string id)
+        public async Task<ActionResult<APIResponse>> GetPreMadeKeychainById(string id)
         {
-            var preMadeKeychain = await _preMadeKeychainService.GetByIdAsync(id);
-            return Ok(new APIResponse { IsSuccess = true, Message = "PreMadeKeychain retrieved successfully.", Data = preMadeKeychain, StatusCode = 200 });
+            var keychain = await _preMadeKeychainService.GetByIdAsync(id);
+            return APIResponse.Success(200, $"Get premade keychain {id} successful!", keychain);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<APIResponse>> CreatePreMadeKeychain([FromBody] CreatePreMadeKeychainDTO dto)
+        {
+            var created = await _preMadeKeychainService.CreateAsync(dto);
+            return APIResponse.Success(201, $"Create premade keychain {created.Id} successful!", created);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<APIResponse>> UpdatePreMadeKeychain([FromBody] UpdatePreMadeKeychainDTO dto)
+        {
+            var updated = await _preMadeKeychainService.UpdateAsync(dto);
+            return APIResponse.Success(200, $"Update premade keychain {updated.Id} successful!", updated);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePreMadeKeychain(string id)
+        public async Task<ActionResult<APIResponse>> DeletePreMadeKeychain(string id)
         {
-            var result = await _preMadeKeychainService.DeleteAsync(id);
-            if (result)
-            {
-                return Ok(new APIResponse { IsSuccess = true, Message = "PreMadeKeychain deleted successfully.", StatusCode = 200 });
-            }
-            return NotFound(new APIResponse { IsSuccess = false, Message = "PreMadeKeychain not found.", StatusCode = 404 });
+            var isDeleted = await _preMadeKeychainService.DeleteAsync(id);
+            return APIResponse.Success(204, $"Delete premade keychain {id} successful!");
         }
     }
 }
