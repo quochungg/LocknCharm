@@ -13,14 +13,14 @@ namespace LocknCharm.API.DependencyInjection
 {
     public static class DependencyInjection
     {
-        public static void AddApiServices(this IServiceCollection services, IConfiguration configuration)
+        public static void AddApiServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
             services.AddDatabase(configuration);
             services.AddMiddlewares();
-            services.AddJwtAuthenticate();
             services.ConfigCors();
             services.ConfigSwagger();
-            services.ConfigJwt(configuration);
+            services.ConfigJwt(configuration, environment);
+            services.AddJwtAuthenticate();
         }
 
         public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
@@ -140,21 +140,43 @@ namespace LocknCharm.API.DependencyInjection
             });
         }
 
-        public static void ConfigJwt(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfigJwt(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
-            services.AddSingleton(option =>
+            services.AddSingleton(_ =>
             {
-                JwtSettings jwtSettings = new JwtSettings
+                JwtSettings jwtSettings;
+
+                if (env.IsProduction())
                 {
-                    SecretKey = configuration.GetValue<string>("JwtSettings:SecretKey"),
-                    Issuer = configuration.GetValue<string>("JwtSettings:Issuer"),
-                    Audience = configuration.GetValue<string>("JwtSettings:Audience"),
-                    AccessTokenExpirationMinutes = configuration.GetValue<int>("JwtSettings:AccessTokenExpirationMinutes"),
-                    RefreshTokenExpirationDays = configuration.GetValue<int>("JwtSettings:RefreshTokenExpirationDays")
-                };
+                    jwtSettings = new JwtSettings
+                    {
+                        SecretKey = Environment.GetEnvironmentVariable("JWTSETTINGS__SECRETKEY")
+                                     ?? throw new InvalidOperationException("Missing env var: JWTSETTINGS__SECRETKEY"),
+                        Issuer = Environment.GetEnvironmentVariable("JWTSETTINGS__ISSUER")
+                                     ?? throw new InvalidOperationException("Missing env var: JWTSETTINGS__ISSUER"),
+                        Audience = Environment.GetEnvironmentVariable("JWTSETTINGS__AUDIENCE")
+                                     ?? throw new InvalidOperationException("Missing env var: JWTSETTINGS__AUDIENCE"),
+                        AccessTokenExpirationMinutes = int.Parse(Environment.GetEnvironmentVariable("JWTSETTINGS__ACCESSTOKENEXPIRATIONMINUTES") ?? "15"),
+                        RefreshTokenExpirationDays = int.Parse(Environment.GetEnvironmentVariable("JWTSETTINGS__REFRESHTOKENEXPIRATIONDAYS") ?? "7")
+                    };
+                }
+                else
+                {
+                    jwtSettings = new JwtSettings
+                    {
+                        SecretKey = configuration["JwtSettings:SecretKey"],
+                        Issuer = configuration["JwtSettings:Issuer"],
+                        Audience = configuration["JwtSettings:Audience"],
+                        AccessTokenExpirationMinutes = configuration.GetValue<int>("JwtSettings:AccessTokenExpirationMinutes"),
+                        RefreshTokenExpirationDays = configuration.GetValue<int>("JwtSettings:RefreshTokenExpirationDays")
+                    };
+                }
+
                 jwtSettings.IsValid();
                 return jwtSettings;
             });
         }
+
+
     }
 }
