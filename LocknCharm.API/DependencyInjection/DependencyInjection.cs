@@ -17,10 +17,10 @@ namespace LocknCharm.API.DependencyInjection
         {
             services.AddDatabase(configuration);
             services.AddMiddlewares();
-            //services.AddJwtAuthenticate();
+            services.AddJwtAuthenticate();
             services.ConfigCors();
             services.ConfigSwagger();
-            //services.ConfigJwt(configuration);
+            services.ConfigJwt(configuration);
         }
 
         public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
