@@ -79,7 +79,7 @@ namespace LocknCharm.Application.Services
             await _preMadeKeychainRepository.UpdateAsync(preMadeKeychainEntity);
             await _unitOfWork.SaveAsync();
 
-            var updatedPreMadeKeychainDto = await _preMadeKeychainRepository.GetByIdAsync(new Guid(preMadeKeychain.Id));
+            var updatedPreMadeKeychainDto = await _preMadeKeychainRepository.GetByPropertyAsync(p => p.Id.ToString() == preMadeKeychain.Id, tracked: false, includeProperties: "Category");
             return _mapper.Map<PreMadeKeychainDTO>(updatedPreMadeKeychainDto);
         }
     }

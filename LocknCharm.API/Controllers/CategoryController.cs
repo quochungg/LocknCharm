@@ -1,5 +1,6 @@
 ﻿using LocknCharm.Application.Common;
 using LocknCharm.Application.DTOs;
+using LocknCharm.Application.DTOs.Category;
 using LocknCharm.Application.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -50,7 +51,7 @@ namespace LocknCharm.API.Controllers
         public async Task<ActionResult<APIResponse>> DeleteCategory(string id)
         {
             var isDeleted = await _categoryService.DeleteAsync(id);
-            return APIResponse.Success(204, $"Delete category {id}");
+            return APIResponse.Success(204, $"Delete category {id} successful!");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LocknCharm.Application.DTOs;
+using LocknCharm.Application.DTOs.Category;
 using LocknCharm.Domain.Entities;
 
 namespace LocknCharm.Application.Common

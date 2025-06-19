@@ -5,6 +5,7 @@ using LocknCharm.Application.Interfaces;
 using LocknCharm.Application.Repositories;
 using LocknCharm.Domain.Entities;
 using AutoMapper.QueryableExtensions;
+using LocknCharm.Application.DTOs.Category;
 
 namespace LocknCharm.Application.Services
 {
