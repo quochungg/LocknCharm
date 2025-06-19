@@ -7,7 +7,7 @@ namespace LocknCharm.Domain.Entities
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedAt { get; set; }
+        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedTime { get; set; }
     }
 }
