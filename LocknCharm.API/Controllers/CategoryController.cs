@@ -2,7 +2,6 @@
 using LocknCharm.Application.DTOs;
 using LocknCharm.Application.DTOs.Category;
 using LocknCharm.Application.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocknCharm.API.Controllers

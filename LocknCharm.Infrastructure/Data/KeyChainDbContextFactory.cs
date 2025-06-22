@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LocknCharm.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
@@ -6,6 +8,10 @@ namespace LocknCharm.Infrastructure.Data
 {
     public class KeyChainDbContextFactory : IDesignTimeDbContextFactory<KeyChainDbContext>
     {
+        public KeyChainDbContextFactory()
+        {
+            
+        }
         public KeyChainDbContext CreateDbContext(string[] args)
         {
             var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");

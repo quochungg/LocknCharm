@@ -3,6 +3,7 @@ using System;
 using LocknCharm.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocknCharm.Infrastructure.Migrations
 {
     [DbContext(typeof(KeyChainDbContext))]
-    partial class KeyChainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250619142552_ThirdMigration")]
+    partial class ThirdMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,24 +56,6 @@ namespace LocknCharm.Infrastructure.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("Roles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            ConcurrencyStamp = "0b5560e5-1736-4cd3-af0e-e94766a08d37",
-                            CreatedTime = new DateTime(2025, 6, 22, 6, 28, 47, 475, DateTimeKind.Utc).AddTicks(2019),
-                            Name = "admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            ConcurrencyStamp = "7267a43b-5c37-4311-99fc-dcc054fc17a6",
-                            CreatedTime = new DateTime(2025, 6, 22, 6, 28, 47, 475, DateTimeKind.Utc).AddTicks(2022),
-                            Name = "user",
-                            NormalizedName = "USER"
-                        });
                 });
 
             modelBuilder.Entity("LocknCharm.Domain.Entities.ApplicationUser", b =>
@@ -148,44 +133,6 @@ namespace LocknCharm.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("Users", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "4fc974ae-cc09-429c-b77f-45c14432aa7a",
-                            CreatedTime = new DateTime(2025, 6, 22, 6, 28, 47, 475, DateTimeKind.Utc).AddTicks(2168),
-                            Email = "admin@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAENSlgH1NWda1Wi2lRBtBXdzqXS28xzJ4Sp9NR43sI6phHd+OQTwLPU1IfepHMCtQCw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "18d406e1-5af2-4fb9-922a-c7ef944a6a73",
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "41baa205-bdfd-4ed4-aad0-16fbbc8d8d1a",
-                            CreatedTime = new DateTime(2025, 6, 22, 6, 28, 47, 532, DateTimeKind.Utc).AddTicks(4164),
-                            Email = "user1@example.com",
-                            EmailConfirmed = true,
-                            FirstName = "Application",
-                            LastName = "User",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER1@EXAMPLE.COM",
-                            NormalizedUserName = "USER1",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGdYHdhSDKpkbxhVzZQfba2wTTUDt/qP0b600dH17NC3hNeUuvFyFM1wdUvN3qe2Dg==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "2bbaadc2-78bb-4f04-b138-36efd450de99",
-                            TwoFactorEnabled = false,
-                            UserName = "user1"
-                        });
                 });
 
             modelBuilder.Entity("LocknCharm.Domain.Entities.Category", b =>
@@ -274,9 +221,7 @@ namespace LocknCharm.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
-
-                    b.UseTptMappingStrategy();
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -336,9 +281,7 @@ namespace LocknCharm.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.UseTptMappingStrategy();
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -358,48 +301,6 @@ namespace LocknCharm.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("LocknCharm.Domain.Entities.ApplicationRoleClaim", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("UpdatedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.ToTable("RoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("LocknCharm.Domain.Entities.ApplicationUserRoles", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.ToTable("UserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedTime = new DateTime(2025, 6, 22, 6, 28, 47, 589, DateTimeKind.Utc).AddTicks(1372),
-                            UpdatedTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            UserId = new Guid("44444444-4444-4444-4444-444444444444"),
-                            RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            CreatedTime = new DateTime(2025, 6, 22, 6, 28, 47, 589, DateTimeKind.Utc).AddTicks(1373),
-                            UpdatedTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("LocknCharm.Domain.Entities.PreMadeKeychain", b =>
@@ -460,24 +361,6 @@ namespace LocknCharm.Infrastructure.Migrations
                     b.HasOne("LocknCharm.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("LocknCharm.Domain.Entities.ApplicationRoleClaim", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", null)
-                        .WithOne()
-                        .HasForeignKey("LocknCharm.Domain.Entities.ApplicationRoleClaim", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("LocknCharm.Domain.Entities.ApplicationUserRoles", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", null)
-                        .WithOne()
-                        .HasForeignKey("LocknCharm.Domain.Entities.ApplicationUserRoles", "UserId", "RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
