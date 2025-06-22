@@ -1,5 +1,4 @@
 ﻿using LocknCharm.Domain.Common;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LocknCharm.Domain.Entities
 {

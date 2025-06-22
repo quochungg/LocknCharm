@@ -1,6 +1,8 @@
 ﻿using LocknCharm.Application.Interfaces;
 using LocknCharm.Application.Services;
+using LocknCharm.Domain.Entities;
 using LocknCharm.Domain.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -21,8 +23,13 @@ namespace LocknCharm.Application.DependencyInjection
 
         private static void AddServices(this IServiceCollection services)
         {
+            services.AddSingleton<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IPreMadeKeychainService, PreMadeKeychainService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IRoleClaimService, RoleClaimService>();
+            
         }
     }
 }

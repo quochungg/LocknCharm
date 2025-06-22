@@ -28,7 +28,7 @@ namespace LocknCharm.API.Middlewares
                     message = "Invalid input.";
                     errors.Add(argEx.Message);
                     break;
-
+               
                 default:
                     statusCode = StatusCodes.Status500InternalServerError;
                     message = "An unexpected error occurred.";
