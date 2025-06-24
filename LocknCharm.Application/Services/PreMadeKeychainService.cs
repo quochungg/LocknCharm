@@ -46,7 +46,7 @@ namespace LocknCharm.Application.Services
             var preMadeKeychain = await _preMadeKeychainRepository.GetByIdAsync(new Guid(id))
                 ?? throw new KeyNotFoundException("Can not find PreMadeKeychain");
 
-            await _preMadeKeychainRepository.DeleteAsync(id);
+            await _preMadeKeychainRepository.DeleteAsync(new Guid(id));
             await _unitOfWork.SaveAsync();
             return true;
         }
