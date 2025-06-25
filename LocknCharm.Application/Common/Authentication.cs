@@ -22,20 +22,17 @@ namespace LocknCharm.Application.Common
             cfg.CreateMap<ApplicationUser, ApplicationUserDTO>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()));
         }).CreateMapper();
-        public static TokenResponse CreateToken(ApplicationUser? user, List<string> roles, JwtSettings jwtSettings, bool isRefresh = false)
+        public static TokenResponse CreateToken(ApplicationUser? user, string role, JwtSettings jwtSettings, bool isRefresh = false)
         {
             // tạo ra claims 
             DateTime now = DateTime.UtcNow;
 
             List<Claim> claims =
             [
-                new Claim(ClaimTypes.NameIdentifier, user!.Id.ToString()),
+                new Claim("id", user!.Id.ToString()),
             ];
 
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
+            claims.Add(new Claim("role", role));
 
             //đăng kí khóa bảo mật
             SymmetricSecurityKey? key = new(Encoding.UTF8.GetBytes(jwtSettings.SecretKey ?? string.Empty));

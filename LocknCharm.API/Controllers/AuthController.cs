@@ -19,7 +19,7 @@ namespace LocknCharm.API.Controllers
         [HttpGet("Me")]
         public async Task<ActionResult<APIResponse>> Me()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst("id")?.Value;
             var user = await _authService.GetUserInfo(userId);
             return APIResponse.Success(201, "Get user successful!", user);
         }

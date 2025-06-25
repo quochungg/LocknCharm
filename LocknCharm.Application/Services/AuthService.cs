@@ -59,12 +59,16 @@ namespace LocknCharm.Application.Services
                 throw new ArgumentException("Password is not correct!");
             }
 
-            var userRole = await _userRoleRepository.GetAll().Where(r => r.UserId == user.Id).Select(l => l.RoleId.ToString()).ToListAsync();
+            var userRole = await _userRoleRepository.GetAllAsync(r => r.UserId == user.Id);
+
+            var userRoleId = userRole.FirstOrDefault()?.RoleId ?? throw new KeyNotFoundException("User role not found!");
+
+            var userRoleName = (await _roleRepository.GetByIdAsync(userRoleId))!.Name ?? throw new KeyNotFoundException("User role not found!");
 
             return new LoginResponseDTO()
             {
                 User = _mapper.Map<ApplicationUserDTO>(user),
-                Token = Authentication.CreateToken(user, userRole, _jwtSettings)
+                Token = Authentication.CreateToken(user, userRoleName, _jwtSettings)
             };
         }
 
