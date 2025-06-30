@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace LocknCharm.Infrastructure.Data
 {
@@ -21,6 +22,8 @@ namespace LocknCharm.Infrastructure.Data
             builder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
             builder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
             builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
+            builder.Entity<Product>().ToTable("Products");
+            builder.Entity<PreMadeKeychain>().ToTable("PreMadeKeychains");
 
             var adminRoleId = Guid.Parse("11111111-1111-1111-1111-111111111111");
             var userRoleId = Guid.Parse("22222222-2222-2222-2222-222222222222");
@@ -97,6 +100,7 @@ namespace LocknCharm.Infrastructure.Data
         }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<PreMadeKeychain> PreMadeKeychains { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Cart> Carts { get; set; }
         public virtual DbSet<CartItem> CartItems { get; set; }
         public virtual DbSet<Order> Orders { get; set; }

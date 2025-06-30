@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LocknCharm.Application.DependencyInjection;
 using LocknCharm.Application.DTOs.ApplicationUser;
 using LocknCharm.Application.DTOs.Auth;
 using LocknCharm.Application.Repositories;
