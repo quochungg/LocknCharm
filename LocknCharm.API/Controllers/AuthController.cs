@@ -2,7 +2,6 @@
 using LocknCharm.Application.DTOs.Auth;
 using LocknCharm.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace LocknCharm.API.Controllers
 {

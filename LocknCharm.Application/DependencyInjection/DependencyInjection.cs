@@ -29,7 +29,8 @@ namespace LocknCharm.Application.DependencyInjection
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IRoleClaimService, RoleClaimService>();
-            
+            services.AddScoped<ICartItemService, CartItemService>();
+            services.AddScoped<ICartService, CartService>();
         }
     }
 }

@@ -2,6 +2,8 @@
 using LocknCharm.Application.DTOs;
 using LocknCharm.Application.DTOs.ApplicationUser;
 using LocknCharm.Application.DTOs.Auth;
+using LocknCharm.Application.DTOs.Cart;
+using LocknCharm.Application.DTOs.CartItem;
 using LocknCharm.Application.DTOs.Category;
 using LocknCharm.Application.DTOs.Role;
 using LocknCharm.Application.DTOs.RoleClaims;
@@ -55,6 +57,23 @@ namespace LocknCharm.Application.Common
             CreateMap<ApplicationRoleClaim, CreateRoleClaimDTO>()
                 .ReverseMap();
             CreateMap<ApplicationRoleClaim, UpdateRoleClaimDTO>()
+                .ReverseMap();
+
+            //CartItem Mappings
+            CreateMap<CartItem, CartItemDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id)) 
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Product.ImageUrl))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Price * src.Quantity))
+                .ReverseMap();
+            CreateMap<CartItem, CreateCartItemDTO>()
+                .ReverseMap()
+                .ForMember(dest => dest.Price, opt => opt.Ignore());
+
+            //Cart Mappings
+            CreateMap<Cart, CartDTO>()
+                .ReverseMap();
+            CreateMap<Cart, CreateCartDTO>()
                 .ReverseMap();
         }
     }

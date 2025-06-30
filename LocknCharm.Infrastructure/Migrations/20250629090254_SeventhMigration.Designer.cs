@@ -3,6 +3,7 @@ using System;
 using LocknCharm.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocknCharm.Infrastructure.Migrations
 {
     [DbContext(typeof(KeyChainDbContext))]
-    partial class KeyChainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250629090254_SeventhMigration")]
+    partial class SeventhMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,16 +61,16 @@ namespace LocknCharm.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            ConcurrencyStamp = "3c7c73c4-556a-4239-bf1d-82bfa2ae2eaf",
-                            CreatedTime = new DateTime(2025, 6, 29, 9, 14, 12, 777, DateTimeKind.Utc).AddTicks(5663),
+                            ConcurrencyStamp = "ad44d489-0dc6-4264-a726-a2d32549f9ea",
+                            CreatedTime = new DateTime(2025, 6, 29, 9, 2, 53, 755, DateTimeKind.Utc).AddTicks(4042),
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            ConcurrencyStamp = "347f7c31-a51b-4542-a9b4-dcaff4d12aff",
-                            CreatedTime = new DateTime(2025, 6, 29, 9, 14, 12, 777, DateTimeKind.Utc).AddTicks(5666),
+                            ConcurrencyStamp = "5781cbf9-fd32-4bdf-a8cc-fb1526040956",
+                            CreatedTime = new DateTime(2025, 6, 29, 9, 2, 53, 755, DateTimeKind.Utc).AddTicks(4045),
                             Name = "user",
                             NormalizedName = "USER"
                         });
@@ -154,16 +157,16 @@ namespace LocknCharm.Infrastructure.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9e57497c-9071-4cf5-b622-1bf524af4aa4",
-                            CreatedTime = new DateTime(2025, 6, 29, 9, 14, 12, 777, DateTimeKind.Utc).AddTicks(5825),
+                            ConcurrencyStamp = "6e641383-f044-4c1e-b8be-de345bd1c2e4",
+                            CreatedTime = new DateTime(2025, 6, 29, 9, 2, 53, 755, DateTimeKind.Utc).AddTicks(4200),
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEB3WP38S9Pqe2u3EAMOd/3+boccYrYjkVmafwWP6IGsVJwYXRmebCfQz3nhLbBTwGw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOjGcF0oHRCtycHvpSHey930WVa54Bhxq3GTzyoJvoq9D2jp1XolRb8+1gO41e1WdA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1adf2777-d5b5-4917-8b7f-0691942690ad",
+                            SecurityStamp = "07204622-dce6-4353-afc3-214e648b2372",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -171,8 +174,8 @@ namespace LocknCharm.Infrastructure.Migrations
                         {
                             Id = new Guid("44444444-4444-4444-4444-444444444444"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "efe67c87-d6c6-4593-b69b-362417828b5f",
-                            CreatedTime = new DateTime(2025, 6, 29, 9, 14, 12, 834, DateTimeKind.Utc).AddTicks(6073),
+                            ConcurrencyStamp = "1ef06a52-ea84-4a45-81c8-753ebba37810",
+                            CreatedTime = new DateTime(2025, 6, 29, 9, 2, 53, 811, DateTimeKind.Utc).AddTicks(7255),
                             Email = "user1@example.com",
                             EmailConfirmed = true,
                             FirstName = "Application",
@@ -180,9 +183,9 @@ namespace LocknCharm.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@EXAMPLE.COM",
                             NormalizedUserName = "USER1",
-                            PasswordHash = "AQAAAAIAAYagAAAAENPCRHXXMYT53Ck3r8W1KFIpfNmwEBa+lZz4r0k5MVGQPtI1rypacXTiAEBnp/Q2GQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFDeoLDpPPgvQn3dNoEh/B7/islqCO5DNxI8p22N/6ISrXPlTyhtcWe0LD9HPdDqSA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "34cc4747-6a0e-48fa-b04c-1628bbb73ff5",
+                            SecurityStamp = "9b14c619-8df2-4aa2-bb14-7bc797dc744e",
                             TwoFactorEnabled = false,
                             UserName = "user1"
                         });
@@ -341,6 +344,11 @@ namespace LocknCharm.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("character varying(21)");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("text");
@@ -363,9 +371,11 @@ namespace LocknCharm.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Product");
 
-                    b.UseTptMappingStrategy();
+                    b.HasDiscriminator().HasValue("Product");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -484,7 +494,7 @@ namespace LocknCharm.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("PreMadeKeychains", (string)null);
+                    b.HasDiscriminator().HasValue("PreMadeKeychain");
                 });
 
             modelBuilder.Entity("LocknCharm.Domain.Entities.ApplicationRoleClaim", b =>
@@ -517,14 +527,14 @@ namespace LocknCharm.Infrastructure.Migrations
                         {
                             UserId = new Guid("33333333-3333-3333-3333-333333333333"),
                             RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedTime = new DateTime(2025, 6, 29, 9, 14, 12, 891, DateTimeKind.Utc).AddTicks(6144),
+                            CreatedTime = new DateTime(2025, 6, 29, 9, 2, 53, 868, DateTimeKind.Utc).AddTicks(2116),
                             UpdatedTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             UserId = new Guid("44444444-4444-4444-4444-444444444444"),
                             RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            CreatedTime = new DateTime(2025, 6, 29, 9, 14, 12, 891, DateTimeKind.Utc).AddTicks(6146),
+                            CreatedTime = new DateTime(2025, 6, 29, 9, 2, 53, 868, DateTimeKind.Utc).AddTicks(2117),
                             UpdatedTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -634,12 +644,6 @@ namespace LocknCharm.Infrastructure.Migrations
                     b.HasOne("LocknCharm.Domain.Entities.Category", "Category")
                         .WithMany("PreMadeKeychains")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LocknCharm.Domain.Entities.Product", null)
-                        .WithOne()
-                        .HasForeignKey("LocknCharm.Domain.Entities.PreMadeKeychain", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
