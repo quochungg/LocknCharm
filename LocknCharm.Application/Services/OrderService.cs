@@ -58,10 +58,10 @@ namespace LocknCharm.Application.Services
                 throw new InvalidOperationException("Cannot create an order with an empty cart.");
             }
 
-            var deliveryDetail = await _deliveryService.GetByIdAsync(dto.DeliveryId) 
+            var deliveryDetail = await _deliveryService.GetByIdAsync(dto.DeliveryId)
                 ?? throw new KeyNotFoundException("Delivery detail not found!");
 
-            var order = new Order 
+            var order = new Order
             {
                 Id = Guid.NewGuid(),
                 CartId = cart.Id,

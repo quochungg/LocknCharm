@@ -80,6 +80,7 @@ namespace LocknCharm.Application.Common
 
             //DeliveryDetail Mappings
             CreateMap<DeliveryDetail, DeliveryDetailDTO>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
                 .ReverseMap();
             CreateMap<DeliveryDetail, CreateDeliveryDetailDTO>()
                 .ReverseMap();
