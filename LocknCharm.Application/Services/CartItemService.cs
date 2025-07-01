@@ -28,22 +28,38 @@ namespace LocknCharm.Application.Services
 
         public async Task CreateCartItemAsync(CreateCartItemDTO dto)
         {
+            var cart = await _cartRepository.GetByIdAsync(dto.CartId) ?? throw new KeyNotFoundException("Cart not found.");
+            foreach (var item in cart.CartItems)
+            {
+                if (item.ProductId.ToString() == dto.ProductId)
+                {
+                    item.Quantity += dto.Quantity;
+                }
+
+                cart.ReCalculateTotalPrice();
+                await _cartRepository.UpdateAsync(cart);
+                await _unitOfWork.SaveAsync();
+                return;
+            }
+
             var cartItem = _mapper.Map<CartItem>(dto);
-            
             var product = await _productRepository.GetByIdAsync(new Guid(dto.ProductId));
 
             if (product is PreMadeKeychain)
             {
-                var preMadeKeychain = await _preMadeKeychainService.GetByIdAsync(dto.ProductId);
-                if (preMadeKeychain == null)
+                var preMadeKeychain = await _preMadeKeychainService.GetByIdAsync(dto.ProductId) ?? throw new KeyNotFoundException("Pre-made keychain not found.");
+
+                if (preMadeKeychain.Stock < dto.Quantity)
                 {
-                    throw new Exception("Pre-made keychain not found.");
-                }
+                    throw new InvalidOperationException($"Not enough stock for the pre-made keychain {preMadeKeychain.Name}.");
+                }               
                 cartItem.Price = preMadeKeychain.Price;
                 cartItem.TotalPrice = preMadeKeychain.Price * dto.Quantity;
             }
 
             await _cartItemRepository.InsertAsync(cartItem);
+            cart.ReCalculateTotalPrice();
+            await _cartRepository.UpdateAsync(cart);         
             await _unitOfWork.SaveAsync();
         }
 
@@ -63,6 +79,9 @@ namespace LocknCharm.Application.Services
                 throw new Exception("Cart item not found.");
             }
             await _cartItemRepository.DeleteAsync(cartItem);
+            var cart = await _cartRepository.GetByIdAsync(cartItem.CartID) ?? throw new KeyNotFoundException("Cart is not found");
+            cart.ReCalculateTotalPrice();
+            await _cartRepository.UpdateAsync(cart);
             await _unitOfWork.SaveAsync();
         }
 

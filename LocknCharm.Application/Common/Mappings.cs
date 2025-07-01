@@ -5,6 +5,8 @@ using LocknCharm.Application.DTOs.Auth;
 using LocknCharm.Application.DTOs.Cart;
 using LocknCharm.Application.DTOs.CartItem;
 using LocknCharm.Application.DTOs.Category;
+using LocknCharm.Application.DTOs.DeliveryDetail;
+using LocknCharm.Application.DTOs.Order;
 using LocknCharm.Application.DTOs.Role;
 using LocknCharm.Application.DTOs.RoleClaims;
 using LocknCharm.Domain.Entities;
@@ -75,6 +77,19 @@ namespace LocknCharm.Application.Common
                 .ReverseMap();
             CreateMap<Cart, CreateCartDTO>()
                 .ReverseMap();
+
+            //DeliveryDetail Mappings
+            CreateMap<DeliveryDetail, DeliveryDetailDTO>()
+                .ReverseMap();
+            CreateMap<DeliveryDetail, CreateDeliveryDetailDTO>()
+                .ReverseMap();
+            CreateMap<DeliveryDetail, UpdateDeliveryDetailDTO>()
+                .ReverseMap();
+
+            //Order Mappings
+            CreateMap<Order, OrderDTO>()
+                .ReverseMap();
+
         }
     }
 }

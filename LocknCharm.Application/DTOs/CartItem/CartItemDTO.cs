@@ -10,8 +10,8 @@ namespace LocknCharm.Application.DTOs.CartItem
         public string ImageUrl { get; set; } = null!;
         public decimal Price { get; set; }
         public int Quantity { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public decimal TotalPrice => Price * Quantity;
     }
 }
