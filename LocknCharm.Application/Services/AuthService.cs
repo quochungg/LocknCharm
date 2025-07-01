@@ -96,6 +96,8 @@ namespace LocknCharm.Application.Services
                 UserId = new Guid(userCreated.Id),
                 RoleId = new Guid(model.RoleId)
             };
+            await _userRoleRepository.InsertAsync(roleUser);
+            await _userRoleRepository.SaveAsync();
             return userCreated;
         }
     }

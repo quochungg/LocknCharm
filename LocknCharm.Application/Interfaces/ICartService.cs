@@ -1,6 +1,5 @@
 ﻿using LocknCharm.Application.Common;
 using LocknCharm.Application.DTOs.Cart;
-using LocknCharm.Application.DTOs.CartItem;
 
 namespace LocknCharm.Application.Interfaces
 {
