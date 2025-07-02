@@ -18,7 +18,7 @@ namespace LocknCharm.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<APIResponse>> CreateOrder([FromBody] CreateOrderDTO dto)
+        public async Task<ActionResult<APIResponse>> CreateOrder(CreateOrderDTO dto)
         {
             var orderId = await _orderService.CreateOrderAsync(dto);
             return APIResponse.Success(201, $"Order {orderId} created successfully!", orderId);

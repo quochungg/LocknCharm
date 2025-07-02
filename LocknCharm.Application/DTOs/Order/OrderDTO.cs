@@ -10,7 +10,7 @@ namespace LocknCharm.Application.DTOs.Order
         public DateTime UpdatedDate { get; set; }
 
         public Guid UserId { get; set; }
-        public Guid DeliveryId { get; set; }
+        public Guid DeliveryDetailId { get; set; }
         public Guid CartId { get; set; }
     }
 }

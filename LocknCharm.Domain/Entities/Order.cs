@@ -9,7 +9,7 @@ namespace LocknCharm.Domain.Entities
         public OrderStatus Status { get; set; } = OrderStatus.Created; 
         public Guid UserId { get; set; }
         public ApplicationUser User { get; set; } = null!;
-        public Guid DeliveryId { get; set; }
+        public Guid DeliveryDetailId { get; set; }
         public DeliveryDetail DeliveryDetail { get; set; } = null!;
         public Guid CartId { get; set; }
         public Cart Cart { get; set; } = null!;

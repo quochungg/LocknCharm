@@ -56,9 +56,9 @@ namespace LocknCharm.Application.Services
             var cancelUrl = $"https://www.facebook.com/";
 
             var request = new PaymentData(
-                orderCode: BitConverter.ToInt64(orderId.ToByteArray(), 0),
+                orderCode: 2,
                 amount: (int)(order.TotalPrice),
-                description: $"Thanh toán đơn hàng #{order.Id}",
+                description: $"Thanh toán đơn hàng #2",
                 returnUrl: returnUrl,
                 cancelUrl: cancelUrl,
                 buyerName: $"{user.FirstName} {user.LastName}",

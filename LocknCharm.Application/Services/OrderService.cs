@@ -16,9 +16,10 @@ namespace LocknCharm.Application.Services
         private readonly IGenericRepository<Order> _orderRepository;
         private readonly IGenericRepository<Cart> _cartRepository;
         private readonly IGenericRepository<CartItem> _cartItemRepository;
+        private readonly IGenericRepository<DeliveryDetail> _deliveryDetailRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public OrderService(IDeliveryDetailService deliveryService, IGenericRepository<Order> orderRepository, IGenericRepository<Cart> cartRepository, IGenericRepository<CartItem> cartItemRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public OrderService(IDeliveryDetailService deliveryService, IGenericRepository<Order> orderRepository, IGenericRepository<Cart> cartRepository, IGenericRepository<CartItem> cartItemRepository, IUnitOfWork unitOfWork, IMapper mapper, IGenericRepository<DeliveryDetail> deliveryDetailRepository)
         {
             _deliveryService = deliveryService;
             _orderRepository = orderRepository;
@@ -26,6 +27,7 @@ namespace LocknCharm.Application.Services
             _cartItemRepository = cartItemRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _deliveryDetailRepository = deliveryDetailRepository;
         }
 
         public async Task CancelOrderAsync(Guid orderId)
@@ -58,14 +60,14 @@ namespace LocknCharm.Application.Services
                 throw new InvalidOperationException("Cannot create an order with an empty cart.");
             }
 
-            var deliveryDetail = await _deliveryService.GetByIdAsync(dto.DeliveryId)
+            var deliveryDetail = await _deliveryDetailRepository.GetByIdAsync(dto.DeliveryDetailId)
                 ?? throw new KeyNotFoundException("Delivery detail not found!");
 
             var order = new Order
             {
                 Id = Guid.NewGuid(),
                 CartId = cart.Id,
-                DeliveryId = deliveryDetail.Id,
+                DeliveryDetailId = deliveryDetail.Id,
                 UserId = cart.UserId,
                 CreatedDate = DateTime.UtcNow,
                 Status = OrderStatus.Created,
