@@ -74,6 +74,5 @@ namespace LocknCharm.Application.Services
             return paymentLinkResp.checkoutUrl;
         }
 
-        public void HandleReturn
     }
 }
