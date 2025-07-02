@@ -4,8 +4,8 @@ namespace LocknCharm.Domain.Entities
 {
     public class DeliveryDetail : BaseEntity
     {
-        public string? UserId { get; set; } = null;
-        public virtual ApplicationUser? User { get; set; } = null;
+        public Guid? UserId { get; set; } = null;
+        public ApplicationUser? User { get; set; } = null;
 
         public string Address { get; set; } = null!;
         public string Phone { get; set; } = null!;
