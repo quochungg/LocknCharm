@@ -7,6 +7,7 @@
         Processing = 3,  // Đang xử lý
         Shipped = 4,     // Đã gửi đi
         Completed = 5,   // Đã giao thành công
-        Cancelled = 6    // Đã hủy
+        Cancelled = 6,   // Đã hủy
+        Failed = 7,      // Thanh toán thất bại
     }
 }

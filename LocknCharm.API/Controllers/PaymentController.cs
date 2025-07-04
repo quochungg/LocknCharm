@@ -2,6 +2,8 @@
 using LocknCharm.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Net.payOS;
+using Net.payOS.Types;
 using System.Text;
 using System.Text.Json;
 
@@ -12,7 +14,6 @@ namespace LocknCharm.API.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
-        private const string SECRET_KEY = "your_payos_secret_key";
         public PaymentController(IPaymentService paymentService)
         {
             _paymentService = paymentService;
@@ -35,8 +36,7 @@ namespace LocknCharm.API.Controllers
                 body = await reader.ReadToEndAsync();
             }
 
-            // 2. Xác thực chữ ký (nếu PayOS cung cấp HMAC-SHA256 Signature)
-            string receivedSignature = Request.Headers["x-signature"]; // Header từ PayOS
+            //string receivedSignature = Request.Headers["x-signature"];
             //string computedSignature = ComputeHmacSha256(body, SECRET_KEY);
 
             //if (receivedSignature != computedSignature)
@@ -44,12 +44,13 @@ namespace LocknCharm.API.Controllers
             //    return Unauthorized("Invalid signature");
             //}
 
-            // 3. Parse JSON và xử lý logic
-            var payload = JsonSerializer.Deserialize<PayOsWebhook>(body);
+            var payload = JsonSerializer.Deserialize<PayOsWebhook>(body, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
-            // Ghi log hoặc xử lý business logic
-            Console.WriteLine($"Giao dịch {payload.OrderCode} có trạng thái {payload.Status}");
-            return Ok("Webhook received successfully");
+            await _paymentService.HandleWebhook(payload!);
+            return Ok("Webhook processed successfully");
         }
     }
 }
