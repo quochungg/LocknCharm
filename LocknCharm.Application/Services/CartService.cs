@@ -51,6 +51,26 @@ namespace LocknCharm.Application.Services
             await _unitOfWork.SaveAsync();
         }
 
+        public async Task<string> GetCartAsync(Guid userId)
+        {
+            var listCart = _cartRepository.Entities
+                .Where(c => c.UserId == userId && !c.IsOrdered)
+                .ToList();
+
+            string cartId = string.Empty;
+
+            if (listCart.Count == 0)
+            {
+                cartId = await CreateAsync(userId.ToString());
+            }
+            else
+            {
+                cartId = listCart.First().Id.ToString();
+            }
+
+            return cartId;
+        }
+
         public async Task<CartDTO> GetCartByIdAsync(string cartId)
         {
             var cart = await _cartRepository.GetByPropertyAsync(c => c.Id == new Guid(cartId), tracked: false) ?? throw new KeyNotFoundException("Cart not found!");
