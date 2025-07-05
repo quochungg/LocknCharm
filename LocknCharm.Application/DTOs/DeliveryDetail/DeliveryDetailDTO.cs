@@ -8,6 +8,7 @@
         public string Phone { get; set; } = null!;
         public string LastName { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
+        public bool IsDefault { get; set; } = false;
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
     }
