@@ -1,14 +1,11 @@
-﻿using LocknCharm.Domain.Common;
-
-namespace LocknCharm.Domain.Entities
+﻿namespace LocknCharm.Application.Common
 {
-    public class Payment : BaseEntity
+    public class PayOsWebhook
     {
+        public string TransactionId { get; set; } = string.Empty;
         public string OrderCode { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public long Amount { get; set; }
         public DateTime Timestamp { get; set; }
-        public Guid OrderId { get; set; }
-        public Order Order { get; set; } = null!;
     }
 }

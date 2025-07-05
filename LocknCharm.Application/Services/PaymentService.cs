@@ -19,8 +19,9 @@ namespace LocknCharm.Application.Services
         private readonly IGenericRepository<CartItem> _cartItemRepository;
         private readonly IGenericRepository<ApplicationUser> _userRepository;
         private readonly IGenericRepository<Product> _productRepository;
+        private readonly IGenericRepository<Payment> _paymentRepository;
 
-        public PaymentService(IGenericRepository<Order> orderRepository, IUnitOfWork unitOfWork, IMapper mapper, IGenericRepository<Cart> cartRepository, IGenericRepository<CartItem> cartItemRepository, IGenericRepository<ApplicationUser> userRepository, IGenericRepository<Product> productRepository, PayOS payOS)
+        public PaymentService(IGenericRepository<Order> orderRepository, IUnitOfWork unitOfWork, IMapper mapper, IGenericRepository<Cart> cartRepository, IGenericRepository<CartItem> cartItemRepository, IGenericRepository<ApplicationUser> userRepository, IGenericRepository<Product> productRepository, PayOS payOS, IGenericRepository<Payment> paymentRepository)
         {
             _orderRepository = orderRepository;
             _unitOfWork = unitOfWork;
@@ -30,6 +31,7 @@ namespace LocknCharm.Application.Services
             _userRepository = userRepository;
             _productRepository = productRepository;
             _payOS = payOS;
+            _paymentRepository = paymentRepository;
         }
 
 
@@ -67,9 +69,9 @@ namespace LocknCharm.Application.Services
             };
 
             var request = new PaymentData(
-                orderCode: 2,
+                orderCode: orderCode,
                 amount: (int)(order.TotalPrice),
-                description: $"Thanh toán đơn hàng #2",
+                description: $"Thanh toán đơn hàng #{orderCode}",
                 returnUrl: returnUrl,
                 cancelUrl: cancelUrl,
                 buyerName: $"{user.FirstName} {user.LastName}",
@@ -82,5 +84,67 @@ namespace LocknCharm.Application.Services
 
             return paymentLinkResp.checkoutUrl;
         }
+
+        public async Task<bool> HandleWebhook(PayOsWebhook payload)
+        {
+            using var transaction = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var orderCode = payload.OrderCode;
+
+                var payment = await _paymentRepository.GetByPropertyAsync(
+                    p => p.OrderCode == orderCode,
+                    tracked: false)
+                    ?? throw new KeyNotFoundException("Payment not found!");
+
+                payment.Status = payload.Status;
+                payment.Amount = payload.Amount;
+                payment.Timestamp = payload.Timestamp;
+                payment.UpdatedDate = DateTime.UtcNow;
+
+                var order = await _orderRepository.GetByPropertyAsync(
+                    o => o.Id == payment.OrderId,
+                    includeProperties: "Cart, Cart.CartItems, Cart.CartItems.Product",
+                    tracked: true)
+                    ?? throw new KeyNotFoundException("Order not found!");
+
+                var cart = order.Cart;
+
+                if (cart.CartItems == null || !cart.CartItems.Any())
+                {
+                    throw new InvalidOperationException("No cart items found for this order.");
+                }
+
+                foreach (var item in cart.CartItems)
+                {
+                    var product = await _productRepository.GetByIdAsync(item.ProductId)
+                        ?? throw new KeyNotFoundException($"Product with ID {item.ProductId} not found!");
+
+                    product.Stock -= item.Quantity;
+                    if (product.Stock < 0)
+                    {
+                        throw new InvalidOperationException($"Insufficient stock for product {product.Name}.");
+                    }
+
+                    _productRepository.Update(product);
+                }
+
+                order.Status = payment.Status == "1" ? OrderStatus.Paid : OrderStatus.Failed;
+                order.UpdatedDate = DateTime.UtcNow;
+                cart.IsOrdered = true;
+
+                await _unitOfWork.SaveAsync();
+                await transaction.CommitAsync();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+
     }
 }

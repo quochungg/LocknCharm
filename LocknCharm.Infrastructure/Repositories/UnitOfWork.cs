@@ -1,5 +1,6 @@
 ﻿using LocknCharm.Application.Repositories;
 using LocknCharm.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LocknCharm.Infrastructure.Repositories
 {
@@ -39,10 +40,11 @@ namespace LocknCharm.Infrastructure.Repositories
             GC.SuppressFinalize(this);
         }
 
-        public void BeginTransaction()
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
         {
-            _dbContext.Database.BeginTransaction();
+            return await _dbContext.Database.BeginTransactionAsync();
         }
+
 
         public void CommitTransaction()
         {
