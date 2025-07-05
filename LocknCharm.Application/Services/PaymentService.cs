@@ -55,6 +55,17 @@ namespace LocknCharm.Application.Services
             var returnUrl = $"https://www.facebook.com/";
             var cancelUrl = $"https://www.facebook.com/";
 
+            int orderCode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
+
+
+            Payment transaction = new()
+            {
+                OrderId = order.Id,
+                Amount = Convert.ToInt64(order.Cart.CartTotalPrice),
+                Status = "0",
+                OrderCode = orderCode.ToString(),
+            };
+
             var request = new PaymentData(
                 orderCode: 2,
                 amount: (int)(order.TotalPrice),

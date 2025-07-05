@@ -24,6 +24,7 @@ namespace LocknCharm.Infrastructure.Data
             builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
             builder.Entity<Product>().ToTable("Products");
             builder.Entity<PreMadeKeychain>().ToTable("PreMadeKeychains");
+            builder.Entity<Payment>().ToTable("Payments");
 
             var adminRoleId = Guid.Parse("11111111-1111-1111-1111-111111111111");
             var userRoleId = Guid.Parse("22222222-2222-2222-2222-222222222222");
