@@ -3,6 +3,7 @@ using System;
 using LocknCharm.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocknCharm.Infrastructure.Migrations
 {
     [DbContext(typeof(KeyChainDbContext))]
-    partial class KeyChainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250705023725_EleventhMigration")]
+    partial class EleventhMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,16 +61,16 @@ namespace LocknCharm.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            ConcurrencyStamp = "087a9449-ed35-469c-a713-37dc92b103c3",
-                            CreatedTime = new DateTime(2025, 7, 5, 3, 24, 56, 726, DateTimeKind.Utc).AddTicks(7026),
+                            ConcurrencyStamp = "6371a644-7179-4a29-9a0b-49711dbf12e2",
+                            CreatedTime = new DateTime(2025, 7, 5, 2, 37, 25, 243, DateTimeKind.Utc).AddTicks(3871),
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            ConcurrencyStamp = "7c03b581-74bb-4ab9-ab05-278f1d300020",
-                            CreatedTime = new DateTime(2025, 7, 5, 3, 24, 56, 726, DateTimeKind.Utc).AddTicks(7029),
+                            ConcurrencyStamp = "eda6e1bc-bf40-480b-a210-c03a5642fbd5",
+                            CreatedTime = new DateTime(2025, 7, 5, 2, 37, 25, 243, DateTimeKind.Utc).AddTicks(3874),
                             Name = "user",
                             NormalizedName = "USER"
                         });
@@ -154,16 +157,16 @@ namespace LocknCharm.Infrastructure.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "891396b0-424b-4080-bf50-25abbb86fe37",
-                            CreatedTime = new DateTime(2025, 7, 5, 3, 24, 56, 726, DateTimeKind.Utc).AddTicks(7210),
+                            ConcurrencyStamp = "e77fa111-6bba-4aa3-b5a2-5674ecb35ced",
+                            CreatedTime = new DateTime(2025, 7, 5, 2, 37, 25, 243, DateTimeKind.Utc).AddTicks(4035),
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAGGA0zn8K3UC141II+6mo3xC8IYilkg78uEcIHK64uSr3E3F1DXuGzXDNiepFA5eg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI/uzooNetEto9BZgUShIihHpL0dxG2SN5U+mNqyLVc2RcJS8g6Szdtb/kOE4XKXXQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f553fa64-c374-4224-972a-405109264873",
+                            SecurityStamp = "21a91b86-4210-4160-abd1-f129b4297e48",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -171,8 +174,8 @@ namespace LocknCharm.Infrastructure.Migrations
                         {
                             Id = new Guid("44444444-4444-4444-4444-444444444444"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ce34abda-f35b-4f2b-ae06-381eade79546",
-                            CreatedTime = new DateTime(2025, 7, 5, 3, 24, 56, 783, DateTimeKind.Utc).AddTicks(3487),
+                            ConcurrencyStamp = "b3ddf704-5412-4f8e-81ec-1519045ae80e",
+                            CreatedTime = new DateTime(2025, 7, 5, 2, 37, 25, 300, DateTimeKind.Utc).AddTicks(4955),
                             Email = "user1@example.com",
                             EmailConfirmed = true,
                             FirstName = "Application",
@@ -180,9 +183,9 @@ namespace LocknCharm.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@EXAMPLE.COM",
                             NormalizedUserName = "USER1",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMy0LHZoArYeAVbirn4VQOUsOxfd3cPEClmqVFf8b2mZDKKw2ryHTpZZbw2WlCSnlw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFUP9rUPazKKVPql6kUCjcWKrCDCd12WIMtx7u2fOblSJeDzmK4GUYe2dlaCCBHAhw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cce74a35-ef62-428e-b00f-8327cfbb6781",
+                            SecurityStamp = "d25ee2b0-4a98-4325-9ebe-539abed3b433",
                             TwoFactorEnabled = false,
                             UserName = "user1"
                         });
@@ -295,9 +298,6 @@ namespace LocknCharm.Infrastructure.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -583,14 +583,14 @@ namespace LocknCharm.Infrastructure.Migrations
                         {
                             UserId = new Guid("33333333-3333-3333-3333-333333333333"),
                             RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedTime = new DateTime(2025, 7, 5, 3, 24, 56, 840, DateTimeKind.Utc).AddTicks(1868),
+                            CreatedTime = new DateTime(2025, 7, 5, 2, 37, 25, 358, DateTimeKind.Utc).AddTicks(4160),
                             UpdatedTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             UserId = new Guid("44444444-4444-4444-4444-444444444444"),
                             RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            CreatedTime = new DateTime(2025, 7, 5, 3, 24, 56, 840, DateTimeKind.Utc).AddTicks(1869),
+                            CreatedTime = new DateTime(2025, 7, 5, 2, 37, 25, 358, DateTimeKind.Utc).AddTicks(4162),
                             UpdatedTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });

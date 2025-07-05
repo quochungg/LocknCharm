@@ -9,5 +9,6 @@ namespace LocknCharm.Application.Interfaces
         public Task<CartDTO> GetCartByIdAsync(string cartId);
         public Task DeleteCartAsync(string cartId);
         public Task<PaginatedList<CartDTO>> GetPaginatedList(string userId, int pageNumber = 1, int pageSize = 10);
+        public Task<string> GetCartAsync(Guid userId);
     }
 }

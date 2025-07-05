@@ -48,10 +48,18 @@ namespace LocknCharm.API.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<PaginatedList<CartDTO>>> GetPaginatedCartList(string userId,int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<PaginatedList<CartDTO>>> GetPaginatedCartList(string userId, int pageNumber = 1, int pageSize = 10)
         {
             var result = await _cartService.GetPaginatedList(userId, pageNumber, pageSize);
             return Ok(result);
+        }
+
+        [HttpGet("user/cart")]
+        public async Task<ActionResult<APIResponse>> GetCart()
+        {
+            var userId = User.FindFirst("id")?.Value ?? throw new UnauthorizedAccessException("You need to login first!");
+            var cartId = await _cartService.GetCartAsync(new Guid(userId));
+            return APIResponse.Success(200, "Get cart successful", cartId);
         }
     }
 }

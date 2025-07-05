@@ -23,6 +23,17 @@ namespace LocknCharm.Application.Services
         public async Task CreateAsync(CreateDeliveryDetailDTO dto)
         {
             var deliveryDetail = _mapper.Map<DeliveryDetail>(dto);
+            var existingDeliveryDetail = await _deliveryDetailRepository.GetAllAsync(d => d.UserId == deliveryDetail.UserId);
+
+            if (!existingDeliveryDetail.Any())
+            {
+                deliveryDetail.IsDefault = true;
+            }
+            else
+            {
+                deliveryDetail.IsDefault = false;
+            }
+
             await _deliveryDetailRepository.InsertAsync(deliveryDetail);
             await _unitOfWork.SaveAsync();
         }
