@@ -71,7 +71,7 @@ namespace LocknCharm.Application.Services
             var request = new PaymentData(
                 orderCode: orderCode,
                 amount: (int)(order.TotalPrice),
-                description: $"Thanh toán đơn hàng #{orderCode}",
+                description: $"Đơn hàng #{orderCode}",
                 returnUrl: returnUrl,
                 cancelUrl: cancelUrl,
                 buyerName: $"{user.FirstName} {user.LastName}",
@@ -80,6 +80,8 @@ namespace LocknCharm.Application.Services
                 items: items.ToList()
             );
 
+            await _paymentRepository.InsertAsync(transaction);
+            await _unitOfWork.SaveAsync();
             var paymentLinkResp = await _payOS.createPaymentLink(request);
 
             return paymentLinkResp.checkoutUrl;
