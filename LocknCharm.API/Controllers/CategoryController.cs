@@ -52,5 +52,13 @@ namespace LocknCharm.API.Controllers
             var isDeleted = await _categoryService.DeleteAsync(id);
             return APIResponse.Success(204, $"Delete category {id} successful!");
         }
+
+        [HttpPost("add-range")]
+        public async Task<ActionResult<APIResponse>> AddRangeCategories([FromBody] List<CreateCategoryDTO> categories)
+        {
+            var createdCategories = await _categoryService.AddRangeAsync(categories);
+            return APIResponse.Success(201, "Add range categories successful!", createdCategories);
+
+        }
     }
 }
