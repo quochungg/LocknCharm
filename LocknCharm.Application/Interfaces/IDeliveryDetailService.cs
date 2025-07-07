@@ -10,5 +10,6 @@ namespace LocknCharm.Application.Interfaces
         Task CreateAsync(CreateDeliveryDetailDTO dto);
         Task<DeliveryDetailDTO> UpdateAsync(UpdateDeliveryDetailDTO dto);
         Task DeleteAsync(Guid id);
+        Task<List<DeliveryDetailDTO>> GetDeliveryDetailByUser(Guid userId);
     }
 }

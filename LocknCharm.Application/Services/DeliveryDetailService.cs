@@ -52,6 +52,19 @@ namespace LocknCharm.Application.Services
             return deliveryDetailDto;
         }
 
+        public async Task<List<DeliveryDetailDTO>> GetDeliveryDetailByUser(Guid userId)
+        {
+            var list = await _deliveryDetailRepository.GetAllAsync(d => d.UserId == userId);
+            
+            if (list.Count() == 0)
+            {
+                throw new KeyNotFoundException("Delivery detail not found!");
+            }
+
+            var deliveryDetail = _mapper.Map<List<DeliveryDetailDTO>>(list.ToList());
+            return deliveryDetail;
+        }
+
         public Task<PaginatedList<DeliveryDetailDTO>> GetPaginatedListAsync(string? searchName, int index, int pageSize)
         {
             var query = _deliveryDetailRepository.GetAll();
