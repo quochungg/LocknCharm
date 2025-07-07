@@ -82,5 +82,31 @@ namespace LocknCharm.Application.Services
             var updatedPreMadeKeychainDto = await _preMadeKeychainRepository.GetByPropertyAsync(p => p.Id.ToString() == preMadeKeychain.Id, tracked: false, includeProperties: "Category");
             return _mapper.Map<PreMadeKeychainDTO>(updatedPreMadeKeychainDto);
         }
+
+        public async Task<List<PreMadeKeychainDTO>> AddRangeAsync(List<CreatePreMadeKeychainDTO> preMadeKeychains)
+        {
+            var list = _mapper.Map<List<PreMadeKeychain>>(preMadeKeychains);
+            foreach (var preMadeKeychain in list)
+            {
+                var category = await _categoryRepository.GetByIdAsync(preMadeKeychain.CategoryId);
+                if (category == null)
+                {
+                    throw new KeyNotFoundException("Category not found for the PreMadeKeychain.");
+                }
+                preMadeKeychain.Category = category;
+            }
+            _preMadeKeychainRepository.InsertRange(list);
+            await _unitOfWork.SaveAsync();
+            return _mapper.Map<List<PreMadeKeychainDTO>>(list);
+        }
+
+        public async Task<PaginatedList<PreMadeKeychainDTO>> GetPaginatedByCategory(Guid categoryId, int index = 1, int pageSize = 10)
+        {
+            var list = _preMadeKeychainRepository.Entities.Where(p => p.CategoryId == categoryId)
+                .ProjectTo<PreMadeKeychainDTO>(_mapper.ConfigurationProvider);
+
+            return await PaginatedList<PreMadeKeychainDTO>.CreateAsync(list, index, pageSize);
+
+        }
     }
 }
