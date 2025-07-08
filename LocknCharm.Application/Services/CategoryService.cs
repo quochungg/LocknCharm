@@ -71,5 +71,14 @@ namespace LocknCharm.Application.Services
             return _mapper.Map<CategoryDTO>(updatedCategory);
 
         }
+
+        public async Task<List<CategoryDTO>> AddRangeAsync(List<CreateCategoryDTO> categories)
+        {
+            List<Category> categoryEntities = _mapper.Map<List<Category>>(categories);
+            _categoryRepository.InsertRange(categoryEntities);
+            await _unitOfWork.SaveAsync();
+            return _mapper.Map<List<CategoryDTO>>(categoryEntities);
+
+        }
     }
 }

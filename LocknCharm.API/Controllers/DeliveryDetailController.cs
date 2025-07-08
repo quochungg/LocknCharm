@@ -50,6 +50,17 @@ namespace LocknCharm.API.Controllers
             await _deliveryDetailService.DeleteAsync(id);
             return APIResponse.Success(204, $"Delete delivery detail {id} successful!");
         }
+
+        [HttpGet("user")]
+        public async Task<ActionResult<APIResponse>> GetDeliveryDetailsByUserId()
+        {
+            if (!Guid.TryParse(User.FindFirst("id")?.Value, out var userId))
+            {
+                return APIResponse.Fail("Invalid user ID", statusCode: 400);
+            }
+            var result = await _deliveryDetailService.GetDeliveryDetailByUser(userId);
+            return APIResponse.Success(200, $"Get delivery details for user {userId} successful!", result);
+        }
     }
 }
 

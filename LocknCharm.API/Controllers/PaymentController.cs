@@ -44,10 +44,7 @@ namespace LocknCharm.API.Controllers
             //    return Unauthorized("Invalid signature");
             //}
 
-            var payload = JsonSerializer.Deserialize<PayOsWebhook>(body, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            var payload = JsonSerializer.Deserialize<PayOSWebhookRequest>(body);
 
             await _paymentService.HandleWebhook(payload!);
             return Ok("Webhook processed successfully");

@@ -50,5 +50,18 @@ namespace LocknCharm.API.Controllers
             var isDeleted = await _preMadeKeychainService.DeleteAsync(id);
             return APIResponse.Success(204, $"Delete premade keychain {id} successful!");
         }
+        [HttpPost("add-range")]
+        public async Task<ActionResult<APIResponse>> AddRangePreMadeKeychains([FromBody] List<CreatePreMadeKeychainDTO> dtos)
+        {
+            var createdKeychains = await _preMadeKeychainService.AddRangeAsync(dtos);
+            return APIResponse.Success(201, "Add range premade keychains successful!", createdKeychains);
+        }
+
+        [HttpGet("category")]
+        public async Task<ActionResult<APIResponse>> GetPreMadeKeychainsByCategoryId(Guid categoryId, int index = 1, int pageSize = 10)
+        {
+            var keychains = await _preMadeKeychainService.GetPaginatedByCategory(categoryId, index, pageSize);
+            return APIResponse.Success(200, $"Get list premade keychains by category {categoryId} successful", keychains);
+        }
     }
 }
