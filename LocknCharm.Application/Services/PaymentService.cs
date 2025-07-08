@@ -6,6 +6,9 @@ using LocknCharm.Domain.Entities;
 using LocknCharm.Domain.Enums;
 using Net.payOS;
 using Net.payOS.Types;
+using Newtonsoft.Json.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace LocknCharm.Application.Services
 {
@@ -15,19 +18,17 @@ namespace LocknCharm.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly PayOS _payOS;
         private readonly IMapper _mapper;
-        private readonly IGenericRepository<Cart> _cartRepository;
-        private readonly IGenericRepository<CartItem> _cartItemRepository;
         private readonly IGenericRepository<ApplicationUser> _userRepository;
         private readonly IGenericRepository<Product> _productRepository;
         private readonly IGenericRepository<Payment> _paymentRepository;
+        private readonly static string _checksumKey = Environment.GetEnvironmentVariable("PAYOS_CHECKSUM_KEY") 
+            ?? throw new InvalidOperationException("PAYOS_CHECKSUM_KEY environment variable is not set.");
 
-        public PaymentService(IGenericRepository<Order> orderRepository, IUnitOfWork unitOfWork, IMapper mapper, IGenericRepository<Cart> cartRepository, IGenericRepository<CartItem> cartItemRepository, IGenericRepository<ApplicationUser> userRepository, IGenericRepository<Product> productRepository, PayOS payOS, IGenericRepository<Payment> paymentRepository)
+        public PaymentService(IGenericRepository<Order> orderRepository, IUnitOfWork unitOfWork, IMapper mapper, IGenericRepository<ApplicationUser> userRepository, IGenericRepository<Product> productRepository, PayOS payOS, IGenericRepository<Payment> paymentRepository)
         {
             _orderRepository = orderRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _cartRepository = cartRepository;
-            _cartItemRepository = cartItemRepository;
             _userRepository = userRepository;
             _productRepository = productRepository;
             _payOS = payOS;
@@ -63,9 +64,7 @@ namespace LocknCharm.Application.Services
             Payment transaction = new()
             {
                 OrderId = order.Id,
-                Amount = Convert.ToInt64(order.Cart.CartTotalPrice),
-                Status = "0",
-                OrderCode = orderCode.ToString(),
+                OrderCode = orderCode,
             };
 
             var request = new PaymentData(
@@ -94,47 +93,42 @@ namespace LocknCharm.Application.Services
             {
                 var orderCode = payload.Data.OrderCode;
 
-                var payment = await _paymentRepository.GetByPropertyAsync(
-                    p => p.OrderCode == orderCode.ToString(),
-                    tracked: false)
+                var payment = await _paymentRepository.GetByPropertyAsync(p => p.OrderCode == orderCode, tracked: true)
                     ?? throw new KeyNotFoundException("Payment not found!");
-                DateTime.TryParse(payload.Data.TransactionDateTime, out DateTime date);
-                payment.Status = payload.Success.ToString();
-                payment.Amount = payload.Data.Amount;
-                payment.Timestamp = date;
-                payment.UpdatedDate = DateTime.UtcNow;
 
-                var order = await _orderRepository.GetByPropertyAsync(
-                    o => o.Id == payment.OrderId,
-                    includeProperties: "Cart, Cart.CartItems, Cart.CartItems.Product",
-                    tracked: true)
+                _mapper.Map(payload, payment);
+                payment.UpdatedDate = DateTime.UtcNow;
+                _paymentRepository.Update(payment);
+
+                var order = await _orderRepository.GetByPropertyAsync(o => o.Id == payment.OrderId, includeProperties: "Cart, Cart.CartItems, Cart.CartItems.Product", tracked: true)
                     ?? throw new KeyNotFoundException("Order not found!");
 
                 var cart = order.Cart;
-
-                if (cart.CartItems == null || !cart.CartItems.Any())
+                if (payment.Success)
                 {
-                    throw new InvalidOperationException("No cart items found for this order.");
-                }
-
-                foreach (var item in cart.CartItems)
-                {
-                    var product = await _productRepository.GetByIdAsync(item.ProductId)
-                        ?? throw new KeyNotFoundException($"Product with ID {item.ProductId} not found!");
-
-                    product.Stock -= item.Quantity;
-                    if (product.Stock < 0)
+                    foreach (var item in cart.CartItems)
                     {
-                        throw new InvalidOperationException($"Insufficient stock for product {product.Name}.");
-                    }
+                        var product = await _productRepository.GetByIdAsync(item.ProductId)
+                            ?? throw new KeyNotFoundException($"Product with ID {item.ProductId} not found!");
 
-                    _productRepository.Update(product);
+                        product.Stock -= item.Quantity;
+                        if (product.Stock < 0)
+                        {
+                            await transaction.RollbackAsync();
+                            throw new InvalidOperationException($"Insufficient stock for product {product.Name}.");
+                        }
+                        _productRepository.Update(product);
+                    }
+                    order.Status = OrderStatus.Paid;
+                }
+                else
+                {
+                    order.Status = OrderStatus.Failed;
                 }
 
-                order.Status = payment.Status == "1" ? OrderStatus.Paid : OrderStatus.Failed;
                 order.UpdatedDate = DateTime.UtcNow;
                 cart.IsOrdered = true;
-
+                await _orderRepository.UpdateAsync(order);
                 await _unitOfWork.SaveAsync();
                 await transaction.CommitAsync();
 
@@ -147,6 +141,47 @@ namespace LocknCharm.Application.Services
             }
         }
 
+        public bool IsValidData(string transaction, string transactionSignature)
+        {
+            try
+            {
+                JObject jsonObject = JObject.Parse(transaction);
 
+                var sortedKeys = jsonObject.Properties()
+                                           .Select(p => p.Name)
+                                           .OrderBy(k => k, StringComparer.Ordinal)
+                                           .ToList();
+
+                var sb = new StringBuilder();
+                for (int i = 0; i < sortedKeys.Count; i++)
+                {
+                    var key = sortedKeys[i];
+                    var value = jsonObject[key]?.ToString();
+                    sb.Append($"{key}={value}");
+                    if (i < sortedKeys.Count - 1)
+                        sb.Append("&");
+                }
+
+                string computedSignature = ComputeHmacSHA256(sb.ToString(), _checksumKey);
+                return computedSignature.Equals(transactionSignature, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                return false;
+            }
+        }
+
+        private string ComputeHmacSHA256(string message, string key)
+        {
+            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+
+            using (var hmac = new HMACSHA256(keyBytes))
+            {
+                byte[] hash = hmac.ComputeHash(messageBytes);
+                return BitConverter.ToString(hash).Replace("-", "").ToLower();
+            }
+        }
     }
 }

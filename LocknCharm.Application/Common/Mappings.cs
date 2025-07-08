@@ -91,6 +91,19 @@ namespace LocknCharm.Application.Common
             CreateMap<Order, OrderDTO>()
                 .ReverseMap();
 
+            //Payment Mappings
+            CreateMap<PayOSWebhookRequest, Payment>()
+                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
+                .ForMember(dest => dest.Desc, opt => opt.MapFrom(src => src.Desc))
+                .ForMember(dest => dest.Success, opt => opt.MapFrom(src => src.Success))
+                .ForMember(dest => dest.Signature, opt => opt.MapFrom(src => src.Signature))
+                .ForMember(dest => dest.OrderCode, opt => opt.MapFrom(src => (long)src.Data.OrderCode))
+                .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Data.Amount))
+                .ForMember(dest => dest.Currency, opt => opt.MapFrom(src => src.Data.Currency))
+                .ForMember(dest => dest.PaymentLinkId, opt => opt.MapFrom(src => src.Data.PaymentLinkId))
+                .ForMember(dest => dest.TransactionDateTime, opt => opt.MapFrom(src => Convert.ToDateTime(src.Data.TransactionDateTime)))
+                .ForMember(dest => dest.OrderId, opt => opt.Ignore()) 
+                .ForMember(dest => dest.Order, opt => opt.Ignore());
         }
     }
 }
