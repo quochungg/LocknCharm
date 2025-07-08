@@ -134,10 +134,10 @@ namespace LocknCharm.Application.Services
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
