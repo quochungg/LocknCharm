@@ -51,7 +51,7 @@ namespace LocknCharm.Application.Services
             var items = order.Cart.CartItems.Select(ci => new ItemData(
                 ci.Product.Name,
                 ci.Quantity,
-                (int)(ci.Product.Price * 1000)
+                (int)(ci.Product.Price)
             ));
 
             var user = await _userRepository.GetByIdAsync(order.UserId)
