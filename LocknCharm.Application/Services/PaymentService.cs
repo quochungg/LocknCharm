@@ -21,10 +21,11 @@ namespace LocknCharm.Application.Services
         private readonly IGenericRepository<ApplicationUser> _userRepository;
         private readonly IGenericRepository<Product> _productRepository;
         private readonly IGenericRepository<Payment> _paymentRepository;
-        private readonly static string _checksumKey = Environment.GetEnvironmentVariable("PAYOS_CHECKSUM_KEY") 
-            ?? throw new InvalidOperationException("PAYOS_CHECKSUM_KEY environment variable is not set.");
+        private readonly IGenericRepository<Cart> _cartRepository;
+        private readonly static string _checksumKey = Environment.GetEnvironmentVariable("PAYOS_CHECKSUM") 
+            ?? throw new InvalidOperationException("PAYOS_CHECKSUM environment variable is not set.");
 
-        public PaymentService(IGenericRepository<Order> orderRepository, IUnitOfWork unitOfWork, IMapper mapper, IGenericRepository<ApplicationUser> userRepository, IGenericRepository<Product> productRepository, PayOS payOS, IGenericRepository<Payment> paymentRepository)
+        public PaymentService(IGenericRepository<Order> orderRepository, IUnitOfWork unitOfWork, IMapper mapper, IGenericRepository<ApplicationUser> userRepository, IGenericRepository<Product> productRepository, PayOS payOS, IGenericRepository<Payment> paymentRepository, IGenericRepository<Cart> cartRepository)
         {
             _orderRepository = orderRepository;
             _unitOfWork = unitOfWork;
@@ -33,6 +34,7 @@ namespace LocknCharm.Application.Services
             _productRepository = productRepository;
             _payOS = payOS;
             _paymentRepository = paymentRepository;
+            _cartRepository = cartRepository;
         }
 
 
@@ -106,6 +108,8 @@ namespace LocknCharm.Application.Services
                 var cart = order.Cart;
                 if (payment.Success)
                 {
+                    cart.IsOrdered = true;
+                    cart.UpdatedDate = DateTime.UtcNow;
                     foreach (var item in cart.CartItems)
                     {
                         var product = await _productRepository.GetByIdAsync(item.ProductId)
@@ -128,6 +132,7 @@ namespace LocknCharm.Application.Services
 
                 order.UpdatedDate = DateTime.UtcNow;
                 cart.IsOrdered = true;
+                await _cartRepository.UpdateAsync(cart);
                 await _orderRepository.UpdateAsync(order);
                 await _unitOfWork.SaveAsync();
                 await transaction.CommitAsync();
