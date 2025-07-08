@@ -54,8 +54,8 @@ namespace LocknCharm.Application.Services
             var user = await _userRepository.GetByIdAsync(order.UserId)
                 ?? throw new KeyNotFoundException("User not found!");
 
-            var returnUrl = $"https://www.facebook.com/";
-            var cancelUrl = $"https://www.facebook.com/";
+            var returnUrl = @$"http://localhost:3000/paymnet-success";
+            var cancelUrl = @$"http://localhost:3000/paymnet-fail";
 
             int orderCode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
 
@@ -87,21 +87,21 @@ namespace LocknCharm.Application.Services
             return paymentLinkResp.checkoutUrl;
         }
 
-        public async Task<bool> HandleWebhook(PayOsWebhook payload)
+        public async Task<bool> HandleWebhook(PayOSWebhookRequest payload)
         {
             using var transaction = await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var orderCode = payload.OrderCode;
+                var orderCode = payload.Data.OrderCode;
 
                 var payment = await _paymentRepository.GetByPropertyAsync(
-                    p => p.OrderCode == orderCode,
+                    p => p.OrderCode == orderCode.ToString(),
                     tracked: false)
                     ?? throw new KeyNotFoundException("Payment not found!");
-
-                payment.Status = payload.Status;
-                payment.Amount = payload.Amount;
-                payment.Timestamp = payload.Timestamp;
+                DateTime.TryParse(payload.Data.TransactionDateTime, out DateTime date);
+                payment.Status = payload.Success.ToString();
+                payment.Amount = payload.Data.Amount;
+                payment.Timestamp = date;
                 payment.UpdatedDate = DateTime.UtcNow;
 
                 var order = await _orderRepository.GetByPropertyAsync(
