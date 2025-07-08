@@ -5,10 +5,10 @@ namespace LocknCharm.Application.Common
     public class PayOSWebhookData
     {
         [JsonPropertyName("orderCode")]
-        public int OrderCode { get; set; } = 0;
+        public long OrderCode { get; set; } = 0;
 
         [JsonPropertyName("amount")]
-        public int Amount { get; set; } = 0;
+        public long Amount { get; set; } = 0;
 
         [JsonPropertyName("description")]
         public string Description { get; set; } = string.Empty;

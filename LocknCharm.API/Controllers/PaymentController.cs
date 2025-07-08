@@ -1,9 +1,7 @@
 ﻿using LocknCharm.Application.Common;
 using LocknCharm.Application.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Net.payOS;
-using Net.payOS.Types;
+using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Text.Json;
 
@@ -35,14 +33,15 @@ namespace LocknCharm.API.Controllers
             {
                 body = await reader.ReadToEndAsync();
             }
+            JObject obj = JObject.Parse(body);
+            JObject data = (JObject)obj["data"]!;
+            string signature = obj["signature"]!.ToString();
+            var isValid = _paymentService.IsValidData(data.ToString(), signature);
 
-            //string receivedSignature = Request.Headers["x-signature"];
-            //string computedSignature = ComputeHmacSha256(body, SECRET_KEY);
-
-            //if (receivedSignature != computedSignature)
-            //{
-            //    return Unauthorized("Invalid signature");
-            //}
+            if (!isValid)
+            {
+                return BadRequest("Invalid data signature");
+            }
 
             var payload = JsonSerializer.Deserialize<PayOSWebhookRequest>(body);
 
